@@ -108,6 +108,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 			}
         	
         });
+        
     	String root = NAction.getDefaultRoot(getApplicationContext());
     	String code = NAction.getCode(this);
     	if (root.equals("")) {
