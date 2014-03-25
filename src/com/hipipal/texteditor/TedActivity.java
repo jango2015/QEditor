@@ -13,8 +13,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -41,11 +43,16 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -207,7 +214,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			File[] listOfFiles = folder.listFiles();
 			for (int i = 0; i < listOfFiles.length; i++) {
 				if (listOfFiles[i].isFile()) {
-					files = listOfFiles[i].getName();
+					files = listOfFiles[i].getName();					
 					listItems.add(files);
 				}
 			}
@@ -241,8 +248,58 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath().toString()+"/com.hipipal.qpyplus";
 		String path = baseDir + "/snippets/";
 		//int start = mEditor.getSelectionStart(); //this is to get the the cursor position
-		String s = readFile(path+snippetName);
-		mEditor.getText().insert(0, s);
+		
+		/*
+		 * Kyle Kersey
+		 * March 24 2014
+		 * 
+		 * If the template file contains the extension ".qpy.html" a WebView will pop up, 
+		 * and will load the file contents, The template file contains a HTML form that is
+		 * used to configure the code template, the template is written in JavaScript and 
+		 * is used format the values in the code template. 
+		 * When the submit button is clicked the WebView will load a URL containing the 
+		 * URL encoded template data with the paramater of "?template=" 
+		 * Changes in the URL of the WebView are listened for and if it conatins the  
+		 * paramater "?template=" the WebView closes and the URL content is decoded and 
+		 * the template content is inserted into the EditText.
+		 */
+		if (snippetName.endsWith(".qpy.html")) {
+			LayoutInflater inflater = getLayoutInflater();
+			View dialoglayout = inflater.inflate(R.layout.template_webview, (ViewGroup) getCurrentFocus());
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setView(dialoglayout);
+			builder.show();
+			final AlertDialog optionDialog = builder.create();
+			WebView lWebView = (WebView) dialoglayout.findViewById(R.id.template_webview);
+			lWebView.getSettings().setJavaScriptEnabled(true);
+			lWebView.loadUrl("file://" + path); /* Load the template into the WebView */
+			lWebView.setWebViewClient(new WebViewClient() {
+			        @Override
+			        // Listen for URL change
+			        public WebResourceResponse shouldInterceptRequest (final WebView view, String url) {
+			            if (url.contains("?template=")) {
+			            	optionDialog.dismiss(); /* close the popup dialog */
+			            	Uri uri=Uri.parse(url);
+			            	final String encoded_template_data = uri.getQueryParameter("template");
+			            	String result;
+							try {
+								// Decode the template data
+								result = URLDecoder.decode( encoded_template_data, "UTF-8");
+								// Insert the result into the EditText
+								mEditor.setText(result);
+							} catch (UnsupportedEncodingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}			            
+			            }
+						return null;
+			        }
+			 });		
+			
+		} else {
+			String s = readFile(path+snippetName);
+			mEditor.getText().insert(0, s);
+		}
 	}
     /**
      * Save code snippet 
