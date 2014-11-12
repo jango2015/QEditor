@@ -25,12 +25,12 @@
 		<item name="gdActionBarBackground">@color/topbar</item>
 		<item name="gdActionBarDividerDrawable">@null</item>
 		<item name="gdActionBarDividerWidth">1px</item>
-		<item name="gdActionBarApplicationDrawable">@drawable/icon_nb</item>
+		<item name="gdActionBarApplicationDrawable">@drawable/icon_nb_editor</item>
 		<item name="gdTabIndicatorStyle">@style/GreenDroid.Widget.TabIndicator</item>
 		<item name="gdTabIndicatorBackground">@drawable/v_tab_indicator</item>	
 		<item name="gdItemViewPreferredHeight">40dip</item>
 		<item name="gdDrawableItemViewStyleDrawable">@style/GreenDroid.Widget.ItemView.DrawableItemView.Drawable</item>		
-		<item name="gdActionBarHomeDrawable">@drawable/icon_nb</item>		
+		<item name="gdActionBarHomeDrawable">@drawable/icon_nb_editor</item>		
 
 	</style>
 	

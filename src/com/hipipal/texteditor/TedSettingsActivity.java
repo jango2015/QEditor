@@ -159,17 +159,17 @@ public class TedSettingsActivity extends PreferenceActivity implements
 		listPref = (ListPreference) findPreference(PREFERENCE_TEXT_SIZE);
 		listPref.setSummary(listPref.getEntry());
 
-		listPref = (ListPreference) findPreference(PREFERENCE_END_OF_LINES);
-		listPref.setSummary(listPref.getEntry());
+		//listPref = (ListPreference) findPreference(PREFERENCE_END_OF_LINES);
+		//listPref.setSummary(listPref.getEntry());
 
-		listPref = (ListPreference) findPreference(PREFERENCE_ENCODING);
-		listPref.setSummary(listPref.getEntry());
+		//listPref = (ListPreference) findPreference(PREFERENCE_ENCODING);
+		//listPref.setSummary(listPref.getEntry());
 
-		listPref = (ListPreference) findPreference(PREFERENCE_MAX_RECENTS);
-		listPref.setSummary(listPref.getEntry());
+		//listPref = (ListPreference) findPreference(PREFERENCE_MAX_RECENTS);
+		//listPref.setSummary(listPref.getEntry());
 
-		listPref = (ListPreference) findPreference(PREFERENCE_MAX_UNDO_STACK);
-		listPref.setSummary(listPref.getEntry());
+		//listPref = (ListPreference) findPreference(PREFERENCE_MAX_UNDO_STACK);
+		//listPref.setSummary(listPref.getEntry());
 
 		/*cbPref = (CheckBoxPreference) findPreference(PREFERENCE_USE_HOME_PAGE);
 		if (cbPref.isChecked()) {

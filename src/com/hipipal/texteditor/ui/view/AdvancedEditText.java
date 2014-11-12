@@ -327,8 +327,8 @@ public class AdvancedEditText extends EditText implements Constants,
 		} else if (fileType!=null && !fileType.equals("")) {*/
 			//this.fileType = fileType;
 		//Log.d(TAG, "fileType:"+fileType);
-		Log.d(TAG, "init");
-		if (fileType.equals("py")) {
+		//Log.d(TAG, "init");
+		if (fileType.equals("py") && this.getLineCount()<Settings.MAX_LINES_NUM_WITH_SYNTAX) {
 			//Log.d(TAG, "init OK");
 			isWatch = true;
 			init();

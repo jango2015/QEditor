@@ -37,9 +37,17 @@
             android:key="select_font"
             android:title="@string/config_title_font" />
             
+            <ListPreference
+                android:defaultValue="300"
+                android:entries="@array/max_lines_num_with_syntax_values"
+                android:entryValues="@array/max_lines_num_with_syntax_values"
+                android:key="max_lines_num_with_syntax"
+                android:title="@string/max_lines_num_with_syntax_title"
+                android:summary="@string/max_lines_num_with_syntax_summary" />
+
 
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/config_cat_other" >
+    <!--PreferenceCategory android:title="@string/config_cat_other" >
         <PreferenceScreen android:title="@string/config_cat_save" >
             <ListPreference
                 android:defaultValue="0"
@@ -101,12 +109,12 @@
                 android:key="search_match_case"
                 android:title="@string/config_title_search_match_case" />
         </PreferenceScreen>
-        <!--PreferenceScreen android:title="@string/config_cat_misc" >
+        <PreferenceScreen android:title="@string/config_cat_misc" >
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="use_home_page"
                 android:summaryOff="@string/config_summary_use_home_page"
                 android:title="@string/config_title_use_home_page" />
-        </PreferenceScreen-->
-    </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory-->
 </PreferenceScreen>

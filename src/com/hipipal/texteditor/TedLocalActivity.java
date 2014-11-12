@@ -92,7 +92,11 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 			@Override
 			public void onItemClick(AdapterView<?> l, View view, int position, long id) {
 			    	final TextItem textItem = (TextItem) l.getAdapter().getItem(position);
-			    	onListItemClick(view, textItem, position);
+			    	if (mBarT!=null && mBarT.isShowing()) {
+			    	} else {
+			    		onListItemClick(view, textItem, position);
+
+			    	}
 			}
         });
         listView.setOnItemLongClickListener(new OnItemLongClickListener() {

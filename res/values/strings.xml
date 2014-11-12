@@ -122,5 +122,7 @@
 	<string name="save_as_snippets_1">Snippets has been Save as: </string>
 	<string name="fail_to_insert">Fail to insert snippet</string>
 	<string name="fail_to_goto">Please input correct number</string>
+	<string name="max_lines_num_with_syntax_title">Auto-highlight lines</string>
+	<string name="max_lines_num_with_syntax_summary">Auto-highlight if lines less than</string>
 
 </resources>
