@@ -5,12 +5,12 @@ QEditor
 Sub project
 -------------------------
 
-* https://github.com/quseit-android/QEditorlib
-* https://github.com/quseit-android/QBaselib 
-* https://github.com/quseit-android/QMiuilib 
-* https://github.com/quseit-android/QAysnchttplib 
-* https://github.com/quseit-android/QBasepagerlib 
-* https://github.com/quseit-android/QFacebooklib
+* https://github.com/quseit/QEditorlib
+* https://github.com/quseit/QBaselib 
+* https://github.com/quseit/QMiuilib 
+* https://github.com/quseit/QAysnchttplib 
+* https://github.com/quseit/QBasepagerlib 
+* https://github.com/quseit/QFacebooklib
 
 
 QEditor' libraries include QEditorlib, QBaselib

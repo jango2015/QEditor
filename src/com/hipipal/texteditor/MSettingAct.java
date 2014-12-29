@@ -59,8 +59,8 @@ public class MSettingAct extends _ABaseAct {
         fb.setVisibility(View.VISIBLE);
         //}
 
-        //RelativeLayout pb = (RelativeLayout)findViewById(R.id.plugin_defaultroot_box);
-        //pb.setVisibility(View.VISIBLE);
+        RelativeLayout pb = (RelativeLayout)findViewById(R.id.plugin_defaultroot_box);
+        pb.setVisibility(View.VISIBLE);
 
         if (NAction.getExtP(this, "conf_is_pro").equals("0")) {
 	        String notifyMsg = NAction.getExtP(getApplicationContext(), "conf_pro_msg");
@@ -141,14 +141,9 @@ public class MSettingAct extends _ABaseAct {
     	//String proxyHost = NAction.getProxyHost(getApplicationContext());
     	//String proxyPort = NAction.getProxyPort(getApplicationContext());
     	String root = NAction.getDefaultRoot(getApplicationContext());
-	    String code = NAction.getCode(getApplicationContext());
 
     	if (root.equals("")) {
-    	    if (code.startsWith("mn")) {
-    	    	root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
-    	    } else {
-    	    	root = Environment.getExternalStorageDirectory().getAbsolutePath().toString()+"/"+CONF.BASE_PATH+"/";
-    	    }
+	    	root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
     	}
     	TextView rootValue = (TextView)findViewById(R.id.plugin_defaultroot_value);
     	rootValue.setText(root);

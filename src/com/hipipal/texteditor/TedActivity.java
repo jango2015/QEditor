@@ -9,6 +9,8 @@ import greendroid.widget.QuickActionBar;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 
+import jackpal.androidterm.util.FileUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -98,11 +100,14 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
         String code = NAction.getCode(this);
         setTitle(getString(R.string.app_name));
 
-        //ImageButton homeBtn = (ImageButton)findViewById(R.id.gd_action_bar_home_item);
-        //homeBtn.setImageResource(R.drawable.icon_nb);
 
         if (code.equals("texteditor")) {       
+            ImageButton homeBtn = (ImageButton)findViewById(R.id.gd_action_bar_home_item);
+            homeBtn.setImageResource(R.drawable.icon_nb_editor);
+            
+            unpackData("private4qe", getFilesDir());
 			checkUpdate(CONF.BASE_PATH);
+			
         }
 
         initWidgetTabItem(0);
@@ -201,8 +206,30 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			String file2 = LoadDataFromAssets("QPy_ConsoleApp");
 			writeToFile(path + "/QPy_ConsoleApp", file2);
 		}
-		
+		String lastFile = NStorage.getSP(this, "qedit.last_filename");
+		if (!lastFile.equals("")) {
+			File f2 = new File(lastFile);
+			if (f2.exists()) {
+				Log.d(TAG, "OPEN LAST:"+lastFile);
+
+				doOpenFile(f2, false);
+			}
+			
+		}
 	}
+    @Override
+	public void onDestroy() {
+    	//stopQPyService(this);
+    	super.onDestroy();
+        String code = NAction.getCode(this);
+
+        if (code.equals("texteditor")) {
+
+        	MyApp.getInstance().exit(); 
+        }
+	}
+
+	
 	private OnQuickActionClickListener mActionListener = new OnQuickActionClickListener() {
         @Override
 		public void onQuickActionClicked(QuickActionWidget widget, int position) {
@@ -537,8 +564,18 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		ImageButton pBtn = (ImageButton)findViewById(R.id.play_btn);
 		pBtn.setVisibility(View.VISIBLE);
 
-		if (mCurrentFilePath!=null && (mCurrentFilePath.endsWith(".py") || mCurrentFilePath.endsWith(".md") || mCurrentFilePath.endsWith(".html") || mCurrentFilePath.endsWith(".htm"))) {
-			pBtn.setImageResource(mCurrentFilePath.endsWith(".py")?R.drawable.ic_go:R.drawable.ic_from_website);
+		if (mCurrentFilePath!=null && 
+				(mCurrentFilePath.endsWith(".py") 
+						|| mCurrentFilePath.endsWith(".md") 
+						|| mCurrentFilePath.endsWith(".html") 
+						|| mCurrentFilePath.endsWith(".htm") 
+						|| mCurrentFilePath.endsWith(".lua") 
+						|| mCurrentFilePath.endsWith(".sh"))) {
+			if (mCurrentFilePath.endsWith(".py") || mCurrentFilePath.endsWith(".sh") || mCurrentFilePath.endsWith(".lua")) {
+				pBtn.setImageResource(R.drawable.ic_go);
+			} else {
+				pBtn.setImageResource(R.drawable.ic_from_website);
+			}
 			pBtn.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -549,7 +586,25 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
 		} else {
 			//pBtn.setImageResource(R.drawable.transparent);
-			pBtn.setVisibility(View.GONE);
+			
+			pBtn.setImageResource(R.drawable.ic_go);
+			pBtn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//
+		    		WBase.setTxtDialogParam(R.drawable.alert_dialog_icon, R.string.qedit_not_support, new android.content.DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {					
+						}
+		    		});
+		    		showDialog(_WBase.DIALOG_NOTIFY_MESSAGE+dialogIndex);
+		    		dialogIndex++;
+
+				}
+			});
+        
+
+			//pBtn.setVisibility(View.GONE);
 			/*String content = mEditor.getText().toString().trim();
 			if (content.length()==0) {
 				pBtn.setImageResource(R.drawable.ic_local);
@@ -957,8 +1012,8 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			}
 		}
 
-		if (!loaded)
-			doClearContents();
+		/*if (!loaded)
+			doClearContents();*/
 	}
 
 	/**
@@ -998,6 +1053,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	 * @return if the file was loaded successfully
 	 */
 	protected boolean doOpenFile(File file, boolean forceReadOnly) {
+	
 		String text;
 
 		if (file == null)
@@ -1008,6 +1064,8 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
 		try {
 			text = TextFileUtils.readTextFile(file);
+			Log.d(TAG, "Settext:"+text.length());
+
 			if (text != null) {
 				mInUndo = true;
 				mEditor.setText(text);
@@ -1036,6 +1094,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 				}
 
 				updateTitle();
+				
+				NStorage.setSP(getApplicationContext(), "qedit.last_filename", mCurrentFilePath);
+
 
 				return true;
 			} else {
@@ -1135,6 +1196,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			mEditor.updateFromSettings("");
 
 		}
+		
+		NStorage.setSP(getApplicationContext(), "qedit.last_filename", mCurrentFilePath);
+
 
 		//Crouton.showText(this, R.string.toast_save_success, Style.CONFIRM);
 		if (show) Toast.makeText(getApplicationContext(), R.string.toast_save_success, Toast.LENGTH_SHORT).show();
@@ -1321,6 +1385,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		mAfterSave = new Runnable() {
 			@Override
 			public void run() {
+
 				finish();
 			}
 		};
@@ -1364,6 +1429,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 					
 				} else {
 					if (mCurrentFilePath == null) {
+
 						finish();
 					} else {
 						newContent();
@@ -1388,6 +1454,8 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	    		//mBarM.show(item.getItemView());
 	    		//SnippetsList();
 				newContent();
+				NStorage.setSP(getApplicationContext(), "qedit.last_filename", "");
+
 	    		break;
 	    	case 40:
 	    		onGSetting(null);
@@ -1421,14 +1489,15 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			} else {
 
 				if (code.equals("texteditor")) {
-					if (exitCount<1) {
+					/*if (exitCount<1) {
 			    		endScreen();
 			    		exitCount++;
-					} else {
+					} else {*/
 						if (mCurrentFilePath == null) {
 							if (mDirty) {
 								quitWithoutSave();
 							} else {
+
 								finish();
 							}
 						} else {
@@ -1440,11 +1509,12 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 								if (mDirty) {
 									finishWithoutSave();
 								} else {
+
 									finish();
 
 								}
 							}
-						}
+						//}
 					}
 				} else {
 					
@@ -1463,6 +1533,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 							if (mDirty) {
 								finishWithoutSave();
 							} else {
+
 								finish();
 							}
 						}
@@ -1502,6 +1573,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+
 							finish();
 						}
 					},null);
@@ -1513,6 +1585,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+
 							finish();
 						}
 					},null);
@@ -1854,8 +1927,24 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 				Uri data = Uri.fromFile(new File(mCurrentFilePath));
 				intent.setData(data);
 				startActivity(intent);
-			
-			}else {
+			} else if (mCurrentFilePath.endsWith(".sh")) {
+				// todo
+				
+				String[] args = {"sh "+mCurrentFilePath};
+				execInConsole(args);
+
+				// qpy not support
+			} else if (mCurrentFilePath.endsWith(".lua")) {
+				// todo
+				String scmd = "lua";
+		    	if (Build.VERSION.SDK_INT >= 20) { 
+		    		scmd = "lua-android5";
+
+		    	} 
+
+				String[] args = {scmd+" "+mCurrentFilePath};
+				execInConsole(args);
+			} else {
 				callPyApi("qedit",mCurrentFilePath,content);
 			}
 		}
@@ -1938,6 +2027,8 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		name = "?";
 		if ((mCurrentFileName != null) && (mCurrentFileName.length() > 0))
 			name = mCurrentFileName;
+
+		Log.d(TAG, "updateTitle:"+mCurrentFileName);
 
 		if (mReadOnly)
 			title = getString(R.string.title_editor_readonly, name);

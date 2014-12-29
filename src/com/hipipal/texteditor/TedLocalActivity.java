@@ -40,14 +40,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-
+/*
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-
+*/
 public class TedLocalActivity extends _ABaseAct implements Constants {
 	private static final String TAG = "local";
 
@@ -218,12 +218,12 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 
     	super.onResume();
     }
-    
+    /*
 	@Override
 	protected void onStop() {
 		finish();
 		super.onStop();
-	}
+	}*/
     
     public void onNotify(View v) {
     }
@@ -626,6 +626,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     public void onUp(View v) {
     	onTop();
     }
+    /*
     public void cloneRepository() throws IOException, InvalidRemoteException, TransportException, GitAPIException{
     	final Context context = this;
     	LayoutInflater li = LayoutInflater.from(context);
@@ -707,5 +708,5 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     	//Toast.makeText(this, getCurrentDir(), Toast.LENGTH_SHORT).show();
     	cloneRepository();
     }
-    
+    */
 }

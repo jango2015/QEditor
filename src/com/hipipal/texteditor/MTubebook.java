@@ -135,8 +135,8 @@ public class MTubebook extends _ABaseAct implements OnTouchListener, Handler.Cal
     	// check network
 
 		// display input
-    	View tl = findViewById(R.id.topline);
-    	tl.setVisibility(View.GONE);
+    	//View tl = findViewById(R.id.topline);
+    	//tl.setVisibility(View.GONE);
     	
     	//EditText termT = (EditText)findViewById(R.id.url_input);
     	//termT.setSelected(true);

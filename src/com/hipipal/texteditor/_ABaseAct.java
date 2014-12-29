@@ -1,5 +1,14 @@
 package com.hipipal.texteditor;
 
+import jackpal.androidterm.AssetExtract;
+import jackpal.androidterm.ResourceManager;
+import jackpal.androidterm.util.FileUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
 import greendroid.graphics.drawable.ActionBarDrawable;
 import greendroid.widget.NormalActionBarItem;
 import greendroid.widget.QuickAction;
@@ -15,7 +24,9 @@ import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.zuowuxuxi.base.MyApp;
 import com.zuowuxuxi.base._WBase;
@@ -422,6 +433,105 @@ public class _ABaseAct extends GDBase {
         }
     }
     
+    private static final int SCRIPT_CONSOLE_CODE = 1237;
+
+    public void execInConsole(String[] args) {
+    	Intent intent = new Intent();
+		intent.setClassName(this.getPackageName(), "jackpal.androidterm.Term");
+		intent.putExtra(CONF.EXTRA_CONTENT_URL0, "main");
+		intent.putExtra("ARGS", args);
+		startActivityForResult(intent,SCRIPT_CONSOLE_CODE);
+
+    }
+
+    public void unpackData(final String resource, File target) {
+    	ResourceManager resourceManager = new ResourceManager(this);
+
+        // The version of data in memory and on disk.
+        String data_version = resourceManager.getString(resource + "_version");
+        String disk_version = "0";
+        boolean isPrivate =  resource.startsWith("private");
+
+
+        //Log.d(TAG, "data_version:"+data_version+"-"+resource + "_version"+"-"+resourceManager);
+        // If no version, no unpacking is necessary.
+        if (data_version == null) {
+            return;
+        }
+
+        // Check the current disk version, if any.
+        String filesDir = target.getAbsolutePath();
+        String disk_version_fn = filesDir + "/" + resource + ".version";
+
+        try {
+            byte buf[] = new byte[64];
+            InputStream is = new FileInputStream(disk_version_fn);
+            int len = is.read(buf);
+            disk_version = new String(buf, 0, len);
+            is.close();
+        } catch (Exception e) {
+            disk_version = "0";
+        }
+
+        // If the disk data is out of date, extract it and write the
+        // version file.
+        /*boolean extract = false;
+        if (disk_version.equals("")) {
+        	extract = true;
+        } else {
+        	Float data_v = Float.parseFloat(data_version);
+        	Float disk_v = Float.parseFloat(disk_version);
+        	if (data_v.intValue()>disk_v.intValue()) {
+        		extract = true;
+        	}
+        }*/
+        
+        //Log.d(TAG, "data_version:"+Math.round(Double.parseDouble(data_version))+"-disk_version:"+Math.round(Double.parseDouble(disk_version))+"-RET:"+(int)(Double.parseDouble(data_version)-Double.parseDouble(disk_version)));
+        if ((int)(Double.parseDouble(data_version)-Double.parseDouble(disk_version))>0 || disk_version.equals("0")) {
+            Log.v(TAG, "Extracting " + resource + " assets.");
+            //recursiveDelete(target);
+
+            target.mkdirs();
+
+            AssetExtract ae = new AssetExtract(this);
+            if (!ae.extractTar(resource + ".mp3", target.getAbsolutePath())) {
+                Toast.makeText(this,"Could not extract " + resource + " data.", Toast.LENGTH_SHORT).show();
+            }
+
+            try {
+            	/*if (resource.equals("private")) {
+            		Toast.makeText(getApplicationContext(), R.string.first_load, Toast.LENGTH_SHORT).show();
+            	}*/
+                // Write .nomedia.
+                new File(target, ".nomedia").createNewFile();
+
+                // Write version file.
+                FileOutputStream os = new FileOutputStream(disk_version_fn);
+                os.write(data_version.getBytes());
+                os.close();
+            } catch (Exception e) {
+                Log.w("python", e);
+                Toast.makeText(this, "Could not extract " + resource + " data, make sure your device have enough space.", Toast.LENGTH_LONG).show();
+            }
+        } else {
+        	Log.d(TAG, "NO EXTRACT");
+
+        }
+        if (isPrivate) {
+			File bind = new File(getFilesDir()+"/bin");
+			for (File bin : bind.listFiles()) {
+				try {
+		  			Log.d(TAG, "chmod:"+bin.getAbsolutePath());
+		          
+					FileUtils.chmod(bin, 0755);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+        }
+
+    }
+
 
 
 	@Override
