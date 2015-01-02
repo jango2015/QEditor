@@ -1,15 +1,7 @@
 package com.hipipal.texteditor;
 
-import jackpal.androidterm.AssetExtract;
-import jackpal.androidterm.ResourceManager;
-import jackpal.androidterm.util.FileUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-
 import greendroid.graphics.drawable.ActionBarDrawable;
+import greendroid.widget.ActionBarItem;
 import greendroid.widget.NormalActionBarItem;
 import greendroid.widget.QuickAction;
 
@@ -40,20 +32,24 @@ public class _ABaseAct extends GDBase {
 
 	@SuppressLint("NewApi")
 	protected void initWidgetTabItem(int flag) {
-		/*addActionBarItem(getGDActionBar()
-        		.newActionBarItem(NormalActionBarItem.class)
-        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_save_as)), 10);*/
-		
 		String code = NAction.getCode(getApplicationContext());
-		if (code.equals("qpyplus") || code.equals("qpy3")) {
-			addActionBarItem(getGDActionBar()
-		        		.newActionBarItem(NormalActionBarItem.class)
-		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
+		if (code.equals("qpyplus") || code.equals("qpy3") || code.startsWith("lua5")) {
+			if (flag != 0) {
 
-			
-		    addActionBarItem(getGDActionBar()
+				addActionBarItem(getGDActionBar()
+			        		.newActionBarItem(NormalActionBarItem.class)
+			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
+	
+				
+			    addActionBarItem(getGDActionBar()
+			        		.newActionBarItem(NormalActionBarItem.class)
+			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_new_a)), 30);
+			} else {
+			    addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
-		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_new_a)), 30);
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
+
+			}
 		    
 		} else if (code.equals("texteditor")) {
 			if (flag == 0) {
@@ -68,12 +64,30 @@ public class _ABaseAct extends GDBase {
 	        		.newActionBarItem(NormalActionBarItem.class)
 	        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
 		} else {
-			addActionBarItem(getGDActionBar()
-	        		.newActionBarItem(NormalActionBarItem.class)
-	        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_save_as)), 10);
+			
+			
 		}
 	}
  
+	public void onSetting(View v) {
+		Intent intent = new Intent();
+		intent.setClassName(this.getPackageName(), this.getPackageName()+".MSettingAct");
+		startActivity(intent);
+	}
+
+
+	@Override
+    public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+    	switch (item.getItemId()) {
+    	case 40:
+    			onSetting(null);
+
+
+    			//mBar.show(item.getItemView());
+
+    	}
+    	return 	super.onHandleActionBarItemClick(item, position);
+    }
 
 
 
@@ -105,19 +119,7 @@ public class _ABaseAct extends GDBase {
      */
     @SuppressWarnings("deprecation")
 	public void callPyApi(String flag, String param, String pyCode) {
-    	//Log.d(TAG, "callPyApi:"+pyCode);
-    	//String appCode = NAction.getCode(getApplicationContext());
-    	//String proxyHost = NAction.getProxyHost(getApplicationContext());
-    	//String proxyPort = NAction.getProxyPort(getApplicationContext());
     	String proxyCode = "";
-    	/*if (!proxyHost.equals("")) {
-    		if (proxyPort.equals("")) {
-    			proxyPort = "80";
-    		}
-    		proxyCode = "PROXY = {'http':'"+proxyHost+":"+proxyPort+"'}\n";
-    	} else {
-    		proxyCode = "PROXY = {}\n";
-    	}*/
     	String extPlgPlusName = com.zuowuxuxi.config.CONF.EXT_PLG_PLUS;
     	String extPlg3Name = CONF.EXT_PLG_3;
 		String extPlgName = NAction.getExtP(getApplicationContext(), "ext_plugin");
@@ -130,10 +132,6 @@ public class _ABaseAct extends GDBase {
 			plgUrl = com.zuowuxuxi.config.CONF.EXT_PLG_URL;
 		}
 		String localQPylib = "com.hipipal.qpylib";
-		// call local api
-		//if (!appCode.startsWith("xx")) {
-
-		//} else {
 		try {
 			String localPlugin = this.getPackageName();
 			Intent intent = new Intent();
@@ -272,15 +270,12 @@ public class _ABaseAct extends GDBase {
 
 	@Override
 	public Class<?> getUpdateSrv() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
     @SuppressWarnings("deprecation")
 	@SuppressLint("DefaultLocale")
 	public void playFromRemote(String link) {
-    	//String process = NUtil.getCpuProcessFromByInfo();
-    	//String features = NUtil.getCpuFeaturesFromByInfo();
     	String code = NAction.getCode(getApplicationContext());
         if (code.startsWith("mn")) {
         	
@@ -316,18 +311,6 @@ public class _ABaseAct extends GDBase {
 	    		intent.setDataAndType(uri , "video/*");
 	    		startActivity(intent);
 			} else {
-			// 如果cpu为armv7 并且 系统已经安装了A8 Player, 则使用A8Player
-			/*if (NUtil.checkAppInstalledByName(getApplicationContext(), a8Name)) {
-	        	//Toast.makeText(getApplicationContext(), R.string.using_optimized_play, Toast.LENGTH_SHORT).show();
-	        	
-	    		Intent intent = new Intent();
-	    		intent.setClassName(a8Name, "com.hipipal.mna8.PLAPlayerAct");
-	    		intent.setAction("android.intent.action.VIEW");
-	    		Uri uri = Uri.parse(link);
-	    		intent.setDataAndType(uri , "video/*");
-	    		startActivity(intent);
-	    		
-			} else {*/
 				
 				boolean useDefault = false;
 				int indexOfDot = link.lastIndexOf('.');
@@ -357,23 +340,9 @@ public class _ABaseAct extends GDBase {
 					intent.setDataAndType(uri , "video/*");
 					startActivity(intent);
 				}
-				/*
-		    	Intent intent = new Intent(this, PLAPlayerAct.class);
-				ArrayList<Uri> playlist = new ArrayList<Uri>();
-				Uri selectedUri = null;
-				Uri tempUri = Uri.parse(link);
-				playlist.add(tempUri);
-				selectedUri = tempUri;
-				intent.putExtra("selected", 0);
-				intent.putExtra("playlist", playlist);
-				intent.setAction(Intent.ACTION_VIEW);
-				intent.setData(selectedUri);
-				this.startActivity(intent);  */
 			}
 			
-        } else {	// 不是MVP
-        	//
-        	
+        } else {	// 不是MVP        	
 			String pkgName = NAction.getExtP(getApplicationContext(), "extend_a8_pkg");
 			if (pkgName.equals("")) {
 				pkgName = CONF.A8_PLAY;
@@ -419,11 +388,6 @@ public class _ABaseAct extends GDBase {
 								Intent intent = NAction.openRemoteLink(getApplicationContext(), pkgUrl);
 								startActivity(intent);
 							}
-							/*} else {
-								Intent intent = NAction.openMarketLink(pkgUrl);
-								startActivity(intent);
-	
-							}*/
 						}
 					}, null);
 		    		showDialog(_WBase.DIALOG_EXIT+dialogIndex);
@@ -443,96 +407,6 @@ public class _ABaseAct extends GDBase {
 		startActivityForResult(intent,SCRIPT_CONSOLE_CODE);
 
     }
-
-    public void unpackData(final String resource, File target) {
-    	ResourceManager resourceManager = new ResourceManager(this);
-
-        // The version of data in memory and on disk.
-        String data_version = resourceManager.getString(resource + "_version");
-        String disk_version = "0";
-        boolean isPrivate =  resource.startsWith("private");
-
-
-        //Log.d(TAG, "data_version:"+data_version+"-"+resource + "_version"+"-"+resourceManager);
-        // If no version, no unpacking is necessary.
-        if (data_version == null) {
-            return;
-        }
-
-        // Check the current disk version, if any.
-        String filesDir = target.getAbsolutePath();
-        String disk_version_fn = filesDir + "/" + resource + ".version";
-
-        try {
-            byte buf[] = new byte[64];
-            InputStream is = new FileInputStream(disk_version_fn);
-            int len = is.read(buf);
-            disk_version = new String(buf, 0, len);
-            is.close();
-        } catch (Exception e) {
-            disk_version = "0";
-        }
-
-        // If the disk data is out of date, extract it and write the
-        // version file.
-        /*boolean extract = false;
-        if (disk_version.equals("")) {
-        	extract = true;
-        } else {
-        	Float data_v = Float.parseFloat(data_version);
-        	Float disk_v = Float.parseFloat(disk_version);
-        	if (data_v.intValue()>disk_v.intValue()) {
-        		extract = true;
-        	}
-        }*/
-        
-        //Log.d(TAG, "data_version:"+Math.round(Double.parseDouble(data_version))+"-disk_version:"+Math.round(Double.parseDouble(disk_version))+"-RET:"+(int)(Double.parseDouble(data_version)-Double.parseDouble(disk_version)));
-        if ((int)(Double.parseDouble(data_version)-Double.parseDouble(disk_version))>0 || disk_version.equals("0")) {
-            Log.v(TAG, "Extracting " + resource + " assets.");
-            //recursiveDelete(target);
-
-            target.mkdirs();
-
-            AssetExtract ae = new AssetExtract(this);
-            if (!ae.extractTar(resource + ".mp3", target.getAbsolutePath())) {
-                Toast.makeText(this,"Could not extract " + resource + " data.", Toast.LENGTH_SHORT).show();
-            }
-
-            try {
-            	/*if (resource.equals("private")) {
-            		Toast.makeText(getApplicationContext(), R.string.first_load, Toast.LENGTH_SHORT).show();
-            	}*/
-                // Write .nomedia.
-                new File(target, ".nomedia").createNewFile();
-
-                // Write version file.
-                FileOutputStream os = new FileOutputStream(disk_version_fn);
-                os.write(data_version.getBytes());
-                os.close();
-            } catch (Exception e) {
-                Log.w("python", e);
-                Toast.makeText(this, "Could not extract " + resource + " data, make sure your device have enough space.", Toast.LENGTH_LONG).show();
-            }
-        } else {
-        	Log.d(TAG, "NO EXTRACT");
-
-        }
-        if (isPrivate) {
-			File bind = new File(getFilesDir()+"/bin");
-			for (File bin : bind.listFiles()) {
-				try {
-		  			Log.d(TAG, "chmod:"+bin.getAbsolutePath());
-		          
-					FileUtils.chmod(bin, 0755);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-        }
-
-    }
-
-
 
 	@Override
 	public String confGetUpdateURL(int flag) {

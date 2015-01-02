@@ -99,18 +99,17 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
         setActionBarContentView(R.layout.layout_editor);
         String code = NAction.getCode(this);
         setTitle(getString(R.string.app_name));
+        initAD(TAG);
 
-
-        if (code.equals("texteditor")) {       
+        if (code.equals("texteditor")) {    
             ImageButton homeBtn = (ImageButton)findViewById(R.id.gd_action_bar_home_item);
             homeBtn.setImageResource(R.drawable.icon_nb_editor);
             
-            unpackData("private4qe", getFilesDir());
 			checkUpdate(CONF.BASE_PATH);
 			
         }
 
-        initWidgetTabItem(0);
+        initWidgetTabItem(5);
 		//prepareQuickActionBarM(0);
 
 		Settings.updateFromPreferences(getSharedPreferences(PREFERENCES_NAME,
@@ -155,24 +154,6 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	        MNApp mnApp = (MNApp) this.getApplication();
 	        mnApp.trackPageView("/"+NAction.getCode(getApplicationContext())+"/dashboard");
         }
-        /*ImageButton mMenuButton = (ImageButton) findViewById(R.id.help_button);
-        mMenuButton.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				mBar.show(v);
-				return false;				
-			}
-		});*/
-        /*ImageButton mRunButton = (ImageButton) findViewById(R.id.play_btn);
-        mRunButton.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				Intent intent = new Intent();
-				intent.setClass(getApplicationContext(), RunRules.class);
-				startActivity(intent);
-				return false;				
-			}
-		});*/
         String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath().toString()+"/com.hipipal.qpyplus";
         String path = baseDir + "/snippets";
 		File folder = new File(path);
@@ -189,22 +170,24 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			String file2 = LoadDataFromAssets("The_MIT_License");
 			writeToFile(path + "/The_MIT_License", file2);
 		}
-		f = new File(path + "/QPy_WebApp");
-		if (!f.exists()) {
-			String file2 = LoadDataFromAssets("QPy_WebApp");
-			writeToFile(path + "/QPy_WebApp", file2);
-		}
-
-		f = new File(path + "/QPy_GUIApp");
-		if (!f.exists()) {
-			String file2 = LoadDataFromAssets("QPy_GUIApp");
-			writeToFile(path + "/QPy_GUIApp", file2);
-		}
-
-		f = new File(path + "/QPy_ConsoleApp");
-		if (!f.exists()) {
-			String file2 = LoadDataFromAssets("QPy_ConsoleApp");
-			writeToFile(path + "/QPy_ConsoleApp", file2);
+		if (code.startsWith("qpy")) {
+			f = new File(path + "/QPy_WebApp");
+			if (!f.exists()) {
+				String file2 = LoadDataFromAssets("QPy_WebApp");
+				writeToFile(path + "/QPy_WebApp", file2);
+			}
+	
+			f = new File(path + "/QPy_GUIApp");
+			if (!f.exists()) {
+				String file2 = LoadDataFromAssets("QPy_GUIApp");
+				writeToFile(path + "/QPy_GUIApp", file2);
+			}
+	
+			f = new File(path + "/QPy_ConsoleApp");
+			if (!f.exists()) {
+				String file2 = LoadDataFromAssets("QPy_ConsoleApp");
+				writeToFile(path + "/QPy_ConsoleApp", file2);
+			}
 		}
 		String lastFile = NStorage.getSP(this, "qedit.last_filename");
 		if (!lastFile.equals("")) {
@@ -550,12 +533,17 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		if (mReadIntent) {
 			readIntent();
 		}
+        initAD(TAG);
 
 		mReadIntent = false;
 
 		updateTitle();
-		if (mCurrentFilePath!=null && mCurrentFilePath.endsWith(".py")) {
-			mEditor.updateFromSettings("py");
+		if (mCurrentFilePath!=null && (mCurrentFilePath.endsWith(".py") || mCurrentFilePath.endsWith(".lua"))) {
+			if (mCurrentFilePath.endsWith(".py")) {
+				mEditor.updateFromSettings("py");
+			} else {
+				mEditor.updateFromSettings("lua");
+			}
 		} else {
 			mEditor.updateFromSettings("");
 
@@ -1036,9 +1024,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
 		TextFileUtils.clearInternal(getApplicationContext());
 		
-		ImageButton pBtn = (ImageButton)findViewById(R.id.play_btn);
+		//ImageButton pBtn = (ImageButton)findViewById(R.id.play_btn);
 		//pBtn.setImageResource(R.drawable.transparent);
-		pBtn.setVisibility(View.GONE);
+		//pBtn.setVisibility(View.GONE);
 		updateTitle();
 	}
 
@@ -1086,8 +1074,12 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 					mEditor.setEnabled(false);
 				}
 
-				if (mCurrentFilePath!=null && mCurrentFilePath.endsWith(".py")) {
-					mEditor.updateFromSettings("py");
+				if (mCurrentFilePath!=null && (mCurrentFilePath.endsWith(".py") || mCurrentFilePath.endsWith(".lua"))) {
+					if (mCurrentFilePath.endsWith(".py")) {
+						mEditor.updateFromSettings("py");
+					} else {
+						mEditor.updateFromSettings("lua");
+					}
 				} else {
 					mEditor.updateFromSettings("");
 
@@ -1190,8 +1182,13 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		mReadOnly = false;
 		mDirty = false;
 		updateTitle();
-		if (mCurrentFilePath!=null && mCurrentFilePath.endsWith(".py")) {
-			mEditor.updateFromSettings("py");
+		if (mCurrentFilePath!=null && (mCurrentFilePath.endsWith(".py") || mCurrentFilePath.endsWith(".lua"))) {
+			if (mCurrentFilePath.endsWith(".py")) {
+				mEditor.updateFromSettings("py");
+			} else {
+				mEditor.updateFromSettings("lua");
+			}
+
 		} else {
 			mEditor.updateFromSettings("");
 
@@ -1489,32 +1486,27 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			} else {
 
 				if (code.equals("texteditor")) {
-					/*if (exitCount<1) {
-			    		endScreen();
-			    		exitCount++;
-					} else {*/
-						if (mCurrentFilePath == null) {
+					if (mCurrentFilePath == null) {
+						if (mDirty) {
+							quitWithoutSave();
+						} else {
+
+							finish();
+						}
+					} else {
+						Intent intent = getIntent();
+						String action = intent.getAction();
+						if (action == null) {
+							newContent();
+						} else {
 							if (mDirty) {
-								quitWithoutSave();
+								finishWithoutSave();
 							} else {
 
 								finish();
-							}
-						} else {
-							Intent intent = getIntent();
-							String action = intent.getAction();
-							if (action == null) {
-								newContent();
-							} else {
-								if (mDirty) {
-									finishWithoutSave();
-								} else {
 
-									finish();
-
-								}
 							}
-						//}
+						}
 					}
 				} else {
 					
@@ -1942,7 +1934,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
 		    	} 
 
-				String[] args = {scmd+" "+mCurrentFilePath};
+				String[] args = {scmd+" "+mCurrentFilePath+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
 				execInConsole(args);
 			} else {
 				callPyApi("qedit",mCurrentFilePath,content);

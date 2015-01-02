@@ -34,10 +34,10 @@ public class MSettingAct extends _ABaseAct {
         initWidgetTabItem(4);
         
         // alpha
-        if (NAction.checkPluginNoAdEnable(getApplicationContext())) {
+        /*if (NAction.checkPluginNoAdEnable(getApplicationContext())) {
         	RelativeLayout tb = (RelativeLayout)findViewById(R.id.plugin_setting_box);
         	tb.setVisibility(View.VISIBLE);
-        }
+        }*/
         // extend plugin
         if (NAction.checkIfScriptExtend(getApplicationContext())) {
         	RelativeLayout sb = (RelativeLayout)findViewById(R.id.plugin_script_box);

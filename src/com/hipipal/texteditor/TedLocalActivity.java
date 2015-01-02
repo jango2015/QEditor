@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 
 import com.hipipal.texteditor.common.Constants;
@@ -19,10 +20,10 @@ import greendroid.widget.QuickActionBar;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 import greendroid.widget.item.DrawableItem;
+import greendroid.widget.item.LongTextItem;
 import greendroid.widget.item.TextItem;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -30,7 +31,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -77,7 +77,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
         setTitle(R.string.app_name);
         
         //initWidgetTabItem(7);
-		//initAD(TAG);
+		initAD(TAG);
         
     	ListView listView = (ListView)findViewById(android.R.id.list);
     	//listView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.v_local_bar, null));
@@ -169,7 +169,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 		case REQUEST_RECENT:
 			ImageButton ln = (ImageButton)findViewById(R.id.left_nav);
 			ln.setImageResource(R.drawable.transparent);
-			rb.setVisibility(View.VISIBLE);
+			rb.setVisibility(View.GONE);
 			setTitle(R.string.title_open_recent);
 			break;
 		case REQUEST_OPEN:
@@ -193,24 +193,6 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
         
     }
     
-    /*@TargetApi(3)
-	@SuppressWarnings("rawtypes")
-	private class CacheAvaiDirs extends AsyncTask {
-		@Override
-		protected Object doInBackground(Object... arg0) {
-            MyApp.getInstance().getAvaiDirs("", true,true);
-    		Log.d(TAG, "doInBackground end");
-    		updatePositionHandler.sendEmptyMessage(0);
-            return null;
-		}
-    }
-	public Handler updatePositionHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-    		myloadContent("", -1);
-		}
-	};*/
-    
     @Override
     public void onResume() {
     	myloadContent("", -1);
@@ -218,25 +200,10 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 
     	super.onResume();
     }
-    /*
-	@Override
-	protected void onStop() {
-		finish();
-		super.onStop();
-	}*/
     
     public void onNotify(View v) {
     }
     
-    /*@Override
-    public boolean onKeyDown(int keycode, KeyEvent event) {
-    	if (keycode == KeyEvent.KEYCODE_BACK) {
-	    	boolean ret = onBack();
-	    	if (ret) return ret;
-    	}
-    	
-    	return super.onKeyDown(keycode, event);
-    }*/
     
     public boolean onTop() {
     	if (curArtistDir.size() == 1) {
@@ -298,7 +265,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 	
     @SuppressLint("DefaultLocale")
 	public void myloadContent(String dirname, int position) {    
-    	
+    	String code = NAction.getCode(getApplicationContext());
     	if (request == REQUEST_RECENT) {
 	    	adapter.clear();
 	    	adapter.add(new TextItem(getString(R.string.info_recent)));
@@ -306,7 +273,8 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 	    	for (int i=0;i<mList.size();i++) {
 	    		String item = mList.get(i);
 	    		
-	    		DrawableItem sItem = new DrawableItem(item,R.drawable.file_text);
+	    		LongTextItem sItem = new LongTextItem(item);
+	    		
 				sItem.setTag(0, "");
 				sItem.setTag(1, item);
 				adapter.add(sItem);
@@ -341,7 +309,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 		
 		        	File[] files = FileHelper.getABSPath(curDir).listFiles();
 		        	if (files!=null) {
-			        	//Arrays.sort(files, sortType);
+			        	Arrays.sort(files, sortTypeByName);
 		        		//int index = 0;
 						for (final File file : files) {
 							//index ++;
@@ -356,34 +324,53 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 								adapter.add(sItem);
 								
 							} else {
-								String ext = FileHelper.getExt(filename.toLowerCase(), "");
 								
+								//String ext = FileHelper.getExt(filename.toLowerCase(), "");
 								String lname = filename.toLowerCase();
-								int icon;
-								if (lname.endsWith(".py")) {
-									icon = R.drawable.file_qpy;
-								} else if (lname.endsWith(".kv") || lname.endsWith(".ini")) {
-									icon = R.drawable.file_text;
-								} else if (lname.endsWith(".png") || lname.endsWith(".jpg") || lname.endsWith(".jpeg") || lname.endsWith(".gif")) {
-									icon = R.drawable.file_bin;
-								} else if (lname.endsWith(".wav") ||  lname.endsWith(".mp3") || lname.endsWith(".mid")) {
-									icon = R.drawable.file_bin;
-								} else if (lname.endsWith(".flv") || lname.endsWith(".wmv") || lname.endsWith(".mp4")) {
-									icon = R.drawable.file_bin;
-								} else if (lname.endsWith(".txt")) {
-									icon = R.drawable.file_text;
-								//} else if (lname.endsWith(".version")) {
-								//	icon = 0;
+								boolean dis = false;
+								if (code.startsWith("qpy")) {
+									if (lname.endsWith(".py") || lname.endsWith(".kv")) {
+										dis = true;
+									}
+									
+								} else if (code.startsWith("lua")) {
+									if (lname.endsWith(".lua")) {
+										dis = true;
+									}
 								} else {
-									icon = R.drawable.file_unknown;
+									dis = true;
 								}
+								
+								if (dis) {
+									int icon;
+									if (lname.endsWith(".py")) {
+										icon = R.drawable.file_qpy;
+									} else if (lname.endsWith(".kv") || lname.endsWith(".ini")) {
+										icon = R.drawable.file_text;
+									} else if (lname.endsWith(".png") || lname.endsWith(".jpg") || lname.endsWith(".jpeg") || lname.endsWith(".gif")) {
+										icon = R.drawable.file_bin;
+									} else if (lname.endsWith(".wav") ||  lname.endsWith(".mp3") || lname.endsWith(".mid")) {
+										icon = R.drawable.file_bin;
+									} else if (lname.endsWith(".flv") || lname.endsWith(".wmv") || lname.endsWith(".mp4")) {
+										icon = R.drawable.file_bin;
+									} else if (lname.endsWith(".txt") || lname.endsWith(".lua")) {
+										icon = R.drawable.file_text;
+									//} else if (lname.endsWith(".version")) {
+									//	icon = 0;
+									} else {
+										icon = R.drawable.file_unknown;
+									}
+	
+									if (icon!=0) {
+						                sItem = new DrawableItem(filename, icon);
+						                sItem.setTag(0, "");
+						                sItem.setTag(1, fullfn);
+						                adapter.add(sItem);
+									}
 
-								if (icon!=0) {
-					                sItem = new DrawableItem(filename, icon);
-					                sItem.setTag(0, "");
-					                sItem.setTag(1, fullfn);
-					                adapter.add(sItem);
 								}
+								
+								
 							}
 						}
 					}
