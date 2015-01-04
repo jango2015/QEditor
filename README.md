@@ -6,11 +6,10 @@ Sub project
 -------------------------
 
 * https://github.com/quseit/QEditorlib
-* https://github.com/quseit/QBaselib 
-* https://github.com/quseit/QMiuilib 
-* https://github.com/quseit/QAysnchttplib 
-* https://github.com/quseit/QBasepagerlib 
-* https://github.com/quseit/QFacebooklib
+* https://github.com/quseit/QBaselib (Switch to the A1.1 branch)
+	* https://github.com/quseit/QMiuilib 
+	* https://github.com/quseit/QAysnchttplib 
+	* https://github.com/quseit/QBasepagerlib 
 
 
 QEditor' libraries include QEditorlib, QBaselib
