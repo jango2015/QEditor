@@ -30,11 +30,13 @@ public class _ABaseAct extends GDBase {
     protected static final int SCRIPT_EXEC_PY = 2235;  
     protected static final int SCRIPT_EXEC_CODE = 1235;  
 
+	public void onNotify(View v) {
+	}
 	@SuppressLint("NewApi")
 	protected void initWidgetTabItem(int flag) {
 		String code = NAction.getCode(getApplicationContext());
 		if (code.equals("qpyplus") || code.equals("qpy3") || code.startsWith("lua5")) {
-			if (flag != 0) {
+			if (flag == 5) {
 
 				addActionBarItem(getGDActionBar()
 			        		.newActionBarItem(NormalActionBarItem.class)
