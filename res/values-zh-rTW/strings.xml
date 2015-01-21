@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">QEdit</string>
+<string name="app_name">QEdit免費版</string>
 <string name="app_name_full">QEdit (編輯器)</string>
 <string name="permission_internal">QEdit Internal Permission</string>
 <string name="title_editor">QEdit - %1$s</string>

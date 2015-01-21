@@ -16,7 +16,6 @@ import com.zuowuxuxi.util.FileHelper;
 import com.zuowuxuxi.util.NAction;
 import com.zuowuxuxi.util.NRequest;
 import com.zuowuxuxi.util.NUtil;
-import com.zuowuxuxi.util.VeDate;
 import com.zuowuxuxi.widget.RightDrawableOnTouchListener;
 import com.zuowuxuxi.asihttp.AsyncHttpResponseHandler;
 import com.zuowuxuxi.base._WBase;

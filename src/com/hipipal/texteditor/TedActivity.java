@@ -99,7 +99,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
         setActionBarContentView(R.layout.layout_editor);
         String code = NAction.getCode(this);
         setTitle(getString(R.string.app_name));
-        initAD(TAG);
+        //if (code.contains("qpy") || code.contains("lua")) {
+        	initAD(TAG);
+        //}
 
         if (code.equals("texteditor")) {    
             ImageButton homeBtn = (ImageButton)findViewById(R.id.gd_action_bar_home_item);
@@ -829,7 +831,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	 * @param v
 	 */
 	
-	public void onSetting(View v) {
+	public void onMore(View v) {
 		int startSelection=mEditor.getSelectionStart();
 		int endSelection=mEditor.getSelectionEnd();
 		String selectedText = mEditor.getText().toString().substring(startSelection, endSelection); 
@@ -1454,9 +1456,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 				NStorage.setSP(getApplicationContext(), "qedit.last_filename", "");
 
 	    		break;
-	    	case 40:
-	    		onGSetting(null);
-	    		break;
+	    	//case 40:
+	    		//onGSetting(null);
+	    		//break;
 	    	default:
 
 		}
@@ -1922,20 +1924,14 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			} else if (mCurrentFilePath.endsWith(".sh")) {
 				// todo
 				
-				String[] args = {"sh "+mCurrentFilePath};
+				String[] args = {"sh "+mCurrentFilePath+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
 				execInConsole(args);
 
 				// qpy not support
 			} else if (mCurrentFilePath.endsWith(".lua")) {
-				// todo
-				String scmd = "lua";
-		    	if (Build.VERSION.SDK_INT >= 20) { 
-		    		scmd = "lua-android5";
 
-		    	} 
+				callLuaApi("qedit",mCurrentFilePath, content);
 
-				String[] args = {scmd+" "+mCurrentFilePath+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
-				execInConsole(args);
 			} else {
 				callPyApi("qedit",mCurrentFilePath,content);
 			}

@@ -15,10 +15,9 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.zuowuxuxi.base.MyApp;
 import com.zuowuxuxi.base._WBase;
@@ -54,7 +53,7 @@ public class _ABaseAct extends GDBase {
 			}
 		    
 		} else if (code.equals("texteditor")) {
-			if (flag == 0) {
+			if (flag == 5) {
 				addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
 		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
@@ -78,11 +77,13 @@ public class _ABaseAct extends GDBase {
 	}
 
 
+	
 	@Override
     public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
     	switch (item.getItemId()) {
     	case 40:
     			onSetting(null);
+    			break;
 
 
     			//mBar.show(item.getItemView());
@@ -112,6 +113,20 @@ public class _ABaseAct extends GDBase {
 	public void onConfigurationChanged(Configuration newConfig) {
     	super.onConfigurationChanged(newConfig);
     }
+    
+    public void callLuaApi(String flag, String param, String luaCode) {
+		//String code = NAction.getCode(this);		
+		// todo
+		String scmd = "lua";
+    	if (Build.VERSION.SDK_INT >= 20) { 
+    		scmd = "lua-android5";
+
+    	} 
+
+		String[] args = {scmd+" "+param+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
+		execInConsole(args);
+    }
+
     
     /**
      * call the Qpython API
@@ -174,7 +189,7 @@ public class _ABaseAct extends GDBase {
 		
 				} else {
 					
-		    		WBase.setTxtDialogParam(0, R.string.pls_install_ext_plg, new DialogInterface.OnClickListener() {
+		    		WBase.setTxtDialogParam(0, R.string.pls_install_qpy, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 		    				String plgUrl = NAction.getExtP(getApplicationContext(), "ext_plugin_pkg3");
@@ -233,7 +248,7 @@ public class _ABaseAct extends GDBase {
 					
 				}  else {
 								
-		    		WBase.setTxtDialogParam(0, R.string.pls_install_ext_plg, new DialogInterface.OnClickListener() {
+		    		WBase.setTxtDialogParam(0, R.string.pls_install_qpy, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 		

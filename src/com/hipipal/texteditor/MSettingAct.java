@@ -1,6 +1,7 @@
 package com.hipipal.texteditor;
 
 import java.io.File;
+
 import com.zuowuxuxi.base.MyApp;
 import com.zuowuxuxi.base._WBase;
 import com.zuowuxuxi.util.NAction;
@@ -32,6 +33,7 @@ public class MSettingAct extends _ABaseAct {
         //String k = av.get(1);
         
         initWidgetTabItem(4);
+        initAD(TAG);
         
         // alpha
         /*if (NAction.checkPluginNoAdEnable(getApplicationContext())) {
@@ -50,7 +52,8 @@ public class MSettingAct extends _ABaseAct {
 	        fb.setVisibility(View.VISIBLE);
         }
 
-        
+        findViewById(R.id.plugin_pro_box).setVisibility(View.VISIBLE);
+
         RelativeLayout rb = (RelativeLayout)findViewById(R.id.proxy_box);
         rb.setVisibility(View.GONE);
         
@@ -62,6 +65,7 @@ public class MSettingAct extends _ABaseAct {
         RelativeLayout pb = (RelativeLayout)findViewById(R.id.plugin_defaultroot_box);
         pb.setVisibility(View.VISIBLE);
 
+        /*
         if (NAction.getExtP(this, "conf_is_pro").equals("0")) {
 	        String notifyMsg = NAction.getExtP(getApplicationContext(), "conf_pro_msg");
 
@@ -75,7 +79,7 @@ public class MSettingAct extends _ABaseAct {
     		if  (!NUtil.checkAppInstalledByName(getApplicationContext(), adpkg)) {
                 ab.setVisibility(View.VISIBLE);
     		}
-        }
+        }*/
 	    
         //RelativeLayout pb = (RelativeLayout)findViewById(R.id.pylib_box);
         //pb.setVisibility(View.VISIBLE);
@@ -108,6 +112,14 @@ public class MSettingAct extends _ABaseAct {
         MyApp.getInstance().addActivity(this); 
     }
     
+    public void onNoAD(View v) {
+    	String confProLink = NAction.getExtP(this, "conf_pro_link");
+    	if (confProLink.equals("")) {
+    		confProLink = "market://details?id=com.quseit.texteditorpro";
+    	}
+    	Intent intent = NAction.openRemoteLink(this, confProLink);
+    	startActivity(intent);
+    }
 
     public void onADFree(View v) {
         String adfreeUrl = NAction.getExtP(getApplicationContext(), "conf_no_ad_pkg_url");
