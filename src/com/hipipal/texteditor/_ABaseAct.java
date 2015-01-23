@@ -52,7 +52,7 @@ public class _ABaseAct extends GDBase {
 
 			}
 		    
-		} else if (code.equals("texteditor")) {
+		} else if (code.contains("texteditor")) {
 			if (flag == 5) {
 				addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
@@ -114,17 +114,44 @@ public class _ABaseAct extends GDBase {
     	super.onConfigurationChanged(newConfig);
     }
     
-    public void callLuaApi(String flag, String param, String luaCode) {
-		//String code = NAction.getCode(this);		
+    @SuppressWarnings("deprecation")
+	public void callLuaApi(String flag, String param, String luaCode) {
+		String code = NAction.getCode(this);		
 		// todo
-		String scmd = "lua";
-    	if (Build.VERSION.SDK_INT >= 20) { 
-    		scmd = "lua-android5";
+		if (code.contains("lua") || (NUtil.checkAppInstalledByName(this, "com.quseit.lua5") || NUtil.checkAppInstalledByName(this, "com.quseit.lua5pro"))) {
+			String scmd = "lua";
+	    	if (Build.VERSION.SDK_INT >= 20) { 
+	    		scmd = "lua-android5";
+	
+	    	} 
+	
+			String[] args = {scmd+" "+param+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
+			execInConsole(args);
+		} else {
+    		WBase.setTxtDialogParam(0, R.string.pls_install_lua, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					
+    				String plgUrl = NAction.getExtP(getApplicationContext(), "ext_plugin_pkg4");
+    				if (plgUrl.equals("")) {
+    					plgUrl = CONF.EXT_PLG_URL4;
+    				}
+    				try {
+						Intent intent = NAction.openRemoteLink(getApplicationContext(), plgUrl);
+						startActivity(intent);
+    				} catch (Exception e) {
+    					plgUrl = CONF.EXT_PLG_URL4;
+						Intent intent = NAction.openRemoteLink(getApplicationContext(), plgUrl);
+						startActivity(intent);
+    				}
+				}
+				}, null);
+    		
+    		showDialog(_WBase.DIALOG_EXIT+dialogIndex);
+    		dialogIndex++;
 
-    	} 
 
-		String[] args = {scmd+" "+param+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
-		execInConsole(args);
+		}
     }
 
     

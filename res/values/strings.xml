@@ -128,7 +128,7 @@
 	<string name="qedit_save_first">Please save the file</string>
 	<string name="private4qe_version">100.00</string>
 
-	<string name="pls_install_lua">Please run lua script with QLua</string>
-	<string name="pls_install_qpy">Please run python script with QPython</string>
+	<string name="pls_install_lua">Please install the QLua to run lua script</string>
+	<string name="pls_install_qpy">Please install the QPython to run python script</string>
 
 </resources>

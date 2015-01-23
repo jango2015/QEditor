@@ -21,11 +21,9 @@ public class AndroidCompat {
         try {
             result = AndroidLevel4PlusCompat.getSDKInt();
         } catch (VerifyError e) {
-            // We must be at an SDK level less than 4.
             try {
                 result = Integer.valueOf(android.os.Build.VERSION.SDK);
             } catch (NumberFormatException e2) {
-                // Couldn't parse string, assume the worst.
                 result = 1;
             }
         }
