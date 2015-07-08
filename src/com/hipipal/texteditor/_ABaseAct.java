@@ -31,6 +31,7 @@ public class _ABaseAct extends GDBase {
 
 	public void onNotify(View v) {
 	}
+	
 	@SuppressLint("NewApi")
 	protected void initWidgetTabItem(int flag) {
 		String code = NAction.getCode(getApplicationContext());
@@ -40,11 +41,20 @@ public class _ABaseAct extends GDBase {
 				addActionBarItem(getGDActionBar()
 			        		.newActionBarItem(NormalActionBarItem.class)
 			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
-	
+
+			    /*addActionBarItem(getGDActionBar()
+		        		.newActionBarItem(NormalActionBarItem.class)
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_collection_new_2)), 35);
+*/
 				
 			    addActionBarItem(getGDActionBar()
 			        		.newActionBarItem(NormalActionBarItem.class)
 			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_new_a)), 30);
+
+			    addActionBarItem(getGDActionBar()
+		        		.newActionBarItem(NormalActionBarItem.class)
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
+
 			} else {
 			    addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
@@ -76,7 +86,6 @@ public class _ABaseAct extends GDBase {
 		startActivity(intent);
 	}
 
-
 	
 	@Override
     public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
@@ -84,7 +93,6 @@ public class _ABaseAct extends GDBase {
     	case 40:
     			onSetting(null);
     			break;
-
 
     			//mBar.show(item.getItemView());
 

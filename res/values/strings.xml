@@ -77,8 +77,7 @@
 	<string name="about_content">QEdit is a text editor for android tablets and phones, besides text edit, it can make python / HTML development on android more fun and convenient especially.</string>
 
     <!-- Misc Strings -->
-    <string name="lorem_ipsum">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porttitor neque semper sem fermentum pretium. Sed pharetra dui faucibus massa malesuada in condimentum mi gravida."</string>
-    <string name="art_licence">"All icons for this app were created and belong to the author of the app : Xavier Gouchet (android@xgouchet.fr)."</string>
+    <string name="lorem_ipsum">"QEdit is a great script editor."</string>
 
     <string name="info_select">Open</string>
     <string name="info_go">Run</string>
@@ -130,5 +129,15 @@
 
 	<string name="pls_install_lua">Please install the QLua to run lua script</string>
 	<string name="pls_install_qpy">Please install the QPython to run python script</string>
+	<string name="info_snippets">Snippets</string>
+	<string name="info_project_type">New ...</string>
+	<string name="file_new">New script</string>
+	<string name="script_name_cannot_empty">Script name could not be empty</string>
+	<string name="project_new">New Project</string>
+	<string name="project_name_cannot_empty">You must input project name</string>
+	<string name="project_has_been_created">Project has been created, you are editing the {0}</string>
+	<string name="script_has_been_created">Script has been created, you are editing the {0}</string>
+	<string name="script_name_should_be_py_ext">Script file name should be end-with ".py"</string>
+
 
 </resources>

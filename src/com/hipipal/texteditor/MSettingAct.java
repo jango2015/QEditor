@@ -45,7 +45,6 @@ public class MSettingAct extends _ABaseAct {
         	RelativeLayout sb = (RelativeLayout)findViewById(R.id.plugin_script_box);
         	sb.setVisibility(View.VISIBLE);
         }
-
         
         if (NAction.getExtP(getApplicationContext(), "conf_is_pro").equals("1")) {
 	        RelativeLayout fb = (RelativeLayout)findViewById(R.id.plugin_ftp_box);

@@ -76,7 +76,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
         setActionBarContentView(R.layout.m_ted_local);
         setTitle(R.string.app_name);
         
-        //initWidgetTabItem(7);
+        initWidgetTabItem(7);
 		initAD(TAG);
         
     	ListView listView = (ListView)findViewById(android.R.id.list);
@@ -302,7 +302,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 		    	//int filesCount;
 		    	
 		    	adapter.clear();
-		    	adapter.add(new TextItem(MessageFormat.format(getString(R.string.current_dir), curDir)));
+		    	adapter.add(new LongTextItem(MessageFormat.format(getString(R.string.current_dir), curDir)));
 		    	//reduceFiles(curDir);
 		    	
 		    	try {

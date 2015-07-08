@@ -63,8 +63,6 @@
 <string name="ui_art_licence">Artistic Licence</string>
 <string name="ui_history">History</string>
 <string name="ui_force_read_only">Open as read only</string>
-<string name="lorem_ipsum">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porttitor neque semper sem fermentum pretium. Sed pharetra dui faucibus massa malesuada in condimentum mi gravida."</string>
-<string name="art_licence">"All icons for this app were created and belong to the author of the app : Xavier Gouchet (android@xgouchet.fr)."</string>
 <string name="info_select">打開</string>
 <string name="info_go">運行</string>
 <string name="info_help">幫助</string>
@@ -73,4 +71,5 @@
 <string name="cannot_save">無法保存</string>
 <string name="cannot_empty">文件內容不能為空</string>
 <string name="confirm_save">確認覆蓋</string>
+<string name="about_content">QEdit是一個安卓上的腳本語言編輯器，QEdit為Python / Lua / Shell 等腳本語言提供了良好的編輯開發支持，包含了許多適用於口袋編程的有用特性。他是手機上最好的腳本語言編輯器。 </string>
 </resources>
