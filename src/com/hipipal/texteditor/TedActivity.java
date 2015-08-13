@@ -2073,32 +2073,34 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	 * Run the current script
 	 */
 	public void runScript(){
-		String content = mEditor.getText().toString().trim();
-		if (content.length() == 0) {
-			Toast.makeText(getApplicationContext(), R.string.cannot_empty, Toast.LENGTH_SHORT).show();
-			
-		} else {
-			if (content.startsWith("<") || mCurrentFilePath.endsWith(".md") || mCurrentFilePath.endsWith(".html")) {
-				//doAutoSaveFile(false);
-				doSaveFile(mCurrentFilePath, false);
-
-				Intent intent = new Intent(getApplicationContext(), MTubebook.class);
-				Uri data = Uri.fromFile(new File(mCurrentFilePath));
-				intent.setData(data);
-				startActivity(intent);
-			} else if (mCurrentFilePath.endsWith(".sh")) {
-				// todo
+		if (mEditor.getText()!=null) {
+			String content = mEditor.getText().toString().trim();
+			if (content.length() == 0) {
+				Toast.makeText(getApplicationContext(), R.string.cannot_empty, Toast.LENGTH_SHORT).show();
 				
-				String[] args = {"sh "+mCurrentFilePath+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
-				execInConsole(args);
-
-				// qpy not support
-			} else if (mCurrentFilePath.endsWith(".lua")) {
-
-				callLuaApi("qedit",mCurrentFilePath, content);
-
 			} else {
-				callPyApi("qedit",mCurrentFilePath,content);
+				if (content.startsWith("<") || mCurrentFilePath.endsWith(".md") || mCurrentFilePath.endsWith(".html")) {
+					//doAutoSaveFile(false);
+					doSaveFile(mCurrentFilePath, false);
+	
+					Intent intent = new Intent(getApplicationContext(), MTubebook.class);
+					Uri data = Uri.fromFile(new File(mCurrentFilePath));
+					intent.setData(data);
+					startActivity(intent);
+				} else if (mCurrentFilePath.endsWith(".sh")) {
+					// todo
+					
+					String[] args = {"sh "+mCurrentFilePath+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
+					execInConsole(args);
+	
+					// qpy not support
+				} else if (mCurrentFilePath.endsWith(".lua")) {
+	
+					callLuaApi("qedit",mCurrentFilePath, content);
+	
+				} else {
+					callPyApi("qedit",mCurrentFilePath,content);
+				}
 			}
 		}
 	}

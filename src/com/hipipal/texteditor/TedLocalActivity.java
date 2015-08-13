@@ -391,30 +391,32 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     
     @SuppressWarnings("deprecation")
 	public void renameItem(final TextItem textItem) {
-    	//Object o1 = textItem.getTag(1);
-		final String fullname = textItem.getTag(1).toString();
-		final File oldf = new File(fullname);
-
-		WBase.setTxtDialogParam(R.drawable.ic_setting, R.string.info_rename, oldf.getName(),
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-				        AlertDialog ad = (AlertDialog) dialog;  
-				        EditText t = (EditText) ad.findViewById(R.id.editText_prompt);
-				        String filename = t.getText().toString().trim();
-				        File newf = new File(oldf.getParent()+"/"+filename);
-				        if (newf.exists()) {
-				        	Toast.makeText(getApplicationContext(), R.string.file_exists, Toast.LENGTH_SHORT).show();
-				        	renameItem(textItem);
-				        } else {
-				        	oldf.renameTo(newf);
-					        myloadContent("", curPosition);
-				        }
-
-					}
-				},null);
-		showDialog(_WBase.DIALOG_TEXT_ENTRY+dialogIndex);
-		dialogIndex++;
+    	Object o1 = textItem.getTag(1);
+    	if (o1!=null) {
+			final String fullname = o1.toString();
+			final File oldf = new File(fullname);
+	
+			WBase.setTxtDialogParam(R.drawable.ic_setting, R.string.info_rename, oldf.getName(),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+					        AlertDialog ad = (AlertDialog) dialog;  
+					        EditText t = (EditText) ad.findViewById(R.id.editText_prompt);
+					        String filename = t.getText().toString().trim();
+					        File newf = new File(oldf.getParent()+"/"+filename);
+					        if (newf.exists()) {
+					        	Toast.makeText(getApplicationContext(), R.string.file_exists, Toast.LENGTH_SHORT).show();
+					        	renameItem(textItem);
+					        } else {
+					        	oldf.renameTo(newf);
+						        myloadContent("", curPosition);
+					        }
+	
+						}
+					},null);
+			showDialog(_WBase.DIALOG_TEXT_ENTRY+dialogIndex);
+			dialogIndex++;
+    	}
     }
     
     @SuppressWarnings("deprecation")

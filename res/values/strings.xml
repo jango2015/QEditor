@@ -93,7 +93,7 @@
     <string name="dir_new">New directory</string>
     <string name="dir_exists">The directory exists</string>
     <string name="cannot_foward">Can not go back</string>
-    <string name="file_exists">File exits, please rename</string>
+    <string name="file_exists">File exists, please rename</string>
 	<string name="search_hint"></string>    
 
 	<string name="video_src">Video {0}</string>
@@ -117,8 +117,8 @@
 	<string name="code_snippets">Code Snippets</string>
 	<string name="save_as_snippets">Save as snippet</string>
 	<string name="info_snippets">snippet</string>
-	<string name="snippet_confirm">Snippet exit, confirm to override ?</string>
-	<string name="save_as_snippets_1">Snippets has been Save as: </string>
+	<string name="snippet_confirm">Snippet exists, confirm to override ?</string>
+	<string name="save_as_snippets_1">Snippets has been saved as: </string>
 	<string name="fail_to_insert">Fail to insert snippet</string>
 	<string name="fail_to_goto">Please input correct number</string>
 	<string name="max_lines_num_with_syntax_title">Auto-highlight lines</string>
