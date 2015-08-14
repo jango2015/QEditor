@@ -11,6 +11,8 @@ public class Settings implements Constants {
 
 	/** Number of recent files to remember */
 	public static int MAX_RECENT_FILES = 10;
+	
+	public static int MAX_LINES_NUM_WITH_SYNTAX = 300;
 
 	/** Show the lines numbers */
 	public static boolean SHOW_LINE_NUMBERS = true;
@@ -78,6 +80,9 @@ public class Settings implements Constants {
 
 		MAX_RECENT_FILES = getStringPreferenceAsInteger(settings,
 				PREFERENCE_MAX_RECENTS, "10");
+		MAX_LINES_NUM_WITH_SYNTAX = getStringPreferenceAsInteger(settings,
+				PREFERENCE_MAX_LINES_NUM_WITH_SYNTAX, "300");
+
 		SHOW_LINE_NUMBERS = settings.getBoolean(PREFERENCE_SHOW_LINE_NUMBERS,
 				true);
 		WORDWRAP = settings.getBoolean(PREFERENCE_WORDWRAP, false);

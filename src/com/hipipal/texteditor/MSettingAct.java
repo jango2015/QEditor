@@ -1,6 +1,7 @@
 package com.hipipal.texteditor;
 
 import java.io.File;
+
 import com.zuowuxuxi.base.MyApp;
 import com.zuowuxuxi.base._WBase;
 import com.zuowuxuxi.util.NAction;
@@ -32,25 +33,26 @@ public class MSettingAct extends _ABaseAct {
         //String k = av.get(1);
         
         initWidgetTabItem(4);
+        initAD(TAG);
         
         // alpha
-        if (NAction.checkPluginNoAdEnable(getApplicationContext())) {
+        /*if (NAction.checkPluginNoAdEnable(getApplicationContext())) {
         	RelativeLayout tb = (RelativeLayout)findViewById(R.id.plugin_setting_box);
         	tb.setVisibility(View.VISIBLE);
-        }
+        }*/
         // extend plugin
         if (NAction.checkIfScriptExtend(getApplicationContext())) {
         	RelativeLayout sb = (RelativeLayout)findViewById(R.id.plugin_script_box);
         	sb.setVisibility(View.VISIBLE);
         }
-
         
         if (NAction.getExtP(getApplicationContext(), "conf_is_pro").equals("1")) {
 	        RelativeLayout fb = (RelativeLayout)findViewById(R.id.plugin_ftp_box);
 	        fb.setVisibility(View.VISIBLE);
         }
 
-        
+        findViewById(R.id.plugin_pro_box).setVisibility(View.VISIBLE);
+
         RelativeLayout rb = (RelativeLayout)findViewById(R.id.proxy_box);
         rb.setVisibility(View.GONE);
         
@@ -59,9 +61,10 @@ public class MSettingAct extends _ABaseAct {
         fb.setVisibility(View.VISIBLE);
         //}
 
-        //RelativeLayout pb = (RelativeLayout)findViewById(R.id.plugin_defaultroot_box);
-        //pb.setVisibility(View.VISIBLE);
+        RelativeLayout pb = (RelativeLayout)findViewById(R.id.plugin_defaultroot_box);
+        pb.setVisibility(View.VISIBLE);
 
+        /*
         if (NAction.getExtP(this, "conf_is_pro").equals("0")) {
 	        String notifyMsg = NAction.getExtP(getApplicationContext(), "conf_pro_msg");
 
@@ -75,7 +78,7 @@ public class MSettingAct extends _ABaseAct {
     		if  (!NUtil.checkAppInstalledByName(getApplicationContext(), adpkg)) {
                 ab.setVisibility(View.VISIBLE);
     		}
-        }
+        }*/
 	    
         //RelativeLayout pb = (RelativeLayout)findViewById(R.id.pylib_box);
         //pb.setVisibility(View.VISIBLE);
@@ -108,6 +111,14 @@ public class MSettingAct extends _ABaseAct {
         MyApp.getInstance().addActivity(this); 
     }
     
+    public void onNoAD(View v) {
+    	String confProLink = NAction.getExtP(this, "conf_pro_link");
+    	if (confProLink.equals("")) {
+    		confProLink = "market://details?id=com.quseit.texteditorpro";
+    	}
+    	Intent intent = NAction.openRemoteLink(this, confProLink);
+    	startActivity(intent);
+    }
 
     public void onADFree(View v) {
         String adfreeUrl = NAction.getExtP(getApplicationContext(), "conf_no_ad_pkg_url");
@@ -141,14 +152,9 @@ public class MSettingAct extends _ABaseAct {
     	//String proxyHost = NAction.getProxyHost(getApplicationContext());
     	//String proxyPort = NAction.getProxyPort(getApplicationContext());
     	String root = NAction.getDefaultRoot(getApplicationContext());
-	    String code = NAction.getCode(getApplicationContext());
 
     	if (root.equals("")) {
-    	    if (code.startsWith("mn")) {
-    	    	root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
-    	    } else {
-    	    	root = Environment.getExternalStorageDirectory().getAbsolutePath().toString()+"/"+CONF.BASE_PATH+"/";
-    	    }
+	    	root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
     	}
     	TextView rootValue = (TextView)findViewById(R.id.plugin_defaultroot_value);
     	rootValue.setText(root);

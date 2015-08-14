@@ -24,4 +24,13 @@ public class CONF extends com.zuowuxuxi.config.CONF{
     public static final String EXT_PLG_3 = "com.hipipal.qpy3";
     public static final String EXT_PLG_URL3 = "http://"+FR_SITE+"/qrcode-python3.html";
 
+    public static final String EXT_PLG_URL4 = "http://quseit.com/qlua.html";
+    
+    
+    public final static String DFROM_QPY2 = "scripts";
+    public final static String DFROM_QPY3 = "scripts3";
+    public final static String DFROM_PRJ2 = "projects";
+    public final static String DFROM_PRJ3 = "projects3";
+
+
 }

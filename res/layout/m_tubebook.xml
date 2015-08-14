@@ -7,14 +7,6 @@
 	android:background="@color/cwhite"
 	android:orientation="vertical">
 
- 	<LinearLayout 
-		android:orientation="vertical"
-		android:layout_width="fill_parent"
-		android:layout_height="2dp"
-		android:id="@+id/topline"
-		android:background="@drawable/gradual"
-		/>  
-    	
 	<FrameLayout
 		android:id="@id/gd_action_bar_content_view"
 		android:layout_height="wrap_content"
