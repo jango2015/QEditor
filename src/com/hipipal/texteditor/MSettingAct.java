@@ -34,10 +34,10 @@ public class MSettingAct extends _ABaseAct {
         initWidgetTabItem(4);
         
         // alpha
-        if (NAction.checkPluginNoAdEnable(getApplicationContext())) {
+        /*if (NAction.checkPluginNoAdEnable(getApplicationContext())) {
         	RelativeLayout tb = (RelativeLayout)findViewById(R.id.plugin_setting_box);
         	tb.setVisibility(View.VISIBLE);
-        }
+        }*/
         // extend plugin
         if (NAction.checkIfScriptExtend(getApplicationContext())) {
         	RelativeLayout sb = (RelativeLayout)findViewById(R.id.plugin_script_box);
@@ -65,16 +65,16 @@ public class MSettingAct extends _ABaseAct {
         if (NAction.getExtP(this, "conf_is_pro").equals("0")) {
 	        String notifyMsg = NAction.getExtP(getApplicationContext(), "conf_pro_msg");
 
-            RelativeLayout ab = (RelativeLayout)findViewById(R.id.plugin_adfree_box);
-            TextView at = (TextView)findViewById(R.id.plugin_adfree);
-            if (!notifyMsg.equals("")) {
-            	at.setText(notifyMsg);
-            }
+            //RelativeLayout ab = (RelativeLayout)findViewById(R.id.plugin_adfree_box);
+            //TextView at = (TextView)findViewById(R.id.plugin_adfree);
+            //if (!notifyMsg.equals("")) {
+            //	at.setText(notifyMsg);
+            //}
             
-            String adpkg = NAction.getExtP(getApplicationContext(), "conf_no_ad_pkg");
-    		if  (!NUtil.checkAppInstalledByName(getApplicationContext(), adpkg)) {
-                ab.setVisibility(View.VISIBLE);
-    		}
+            //String adpkg = NAction.getExtP(getApplicationContext(), "conf_no_ad_pkg");
+    		//if  (!NUtil.checkAppInstalledByName(getApplicationContext(), adpkg)) {
+             //   ab.setVisibility(View.VISIBLE);
+    		//}
         }
 	    
         //RelativeLayout pb = (RelativeLayout)findViewById(R.id.pylib_box);

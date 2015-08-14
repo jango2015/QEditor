@@ -56,6 +56,7 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hipipal.texteditor.common.Constants;
@@ -80,6 +81,7 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
  * @author River
  *
  */
+
 public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		OnClickListener {
 	public static final String TAG = "TED";
@@ -178,8 +180,10 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			writeToFile(path + "/Apache License", file1);
 			writeToFile(path + "/The MIT License", file2);
 		}
-		
+		initDrawerMenu(this);
 	}
+	
+
 	private OnQuickActionClickListener mActionListener = new OnQuickActionClickListener() {
         @Override
 		public void onQuickActionClicked(QuickActionWidget widget, int position) {
@@ -202,7 +206,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
     };
     /**
-     * Create a list of snippets 
+     * Create a list of snippet 
      */
     public void SnippetsList() {
 		List<String> listItems = new ArrayList<String>();
@@ -459,9 +463,136 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
     @Override
     public int createLayout() {
-        return R.layout.gd_content_normal;
+        return R.layout.gd_content_drawer;
     }
     
+    private static String getFileName(String path)
+    {
+    	return path.substring(path.lastIndexOf('/') + 1);
+    }
+
+    private void initDrawerMenu(Context context) {
+    	LinearLayout gd_drawer_layout_left= (LinearLayout)findViewById(R.id.gd_drawer_layout_left);
+    	View drawerDownMenu=LayoutInflater.from(context).inflate(R.layout.drawer_menu, null);
+    	gd_drawer_layout_left.addView(drawerDownMenu);
+
+    	LinearLayout itemView1 = (LinearLayout)findViewById(R.id.menu_input_item1);
+    	LinearLayout itemView2 = (LinearLayout)findViewById(R.id.menu_input_item2);
+    	LinearLayout itemView3 = (LinearLayout)findViewById(R.id.menu_input_item3);
+    	LinearLayout itemView4 = (LinearLayout)findViewById(R.id.menu_input_item4);
+    	LinearLayout itemView5 = (LinearLayout)findViewById(R.id.menu_input_item5);
+
+    	TextView textView1 = (TextView)findViewById(R.id.menu_input_name1);
+    	TextView textView2 = (TextView)findViewById(R.id.menu_input_name2);
+    	TextView textView3 = (TextView)findViewById(R.id.menu_input_name3);
+    	TextView textView4 = (TextView)findViewById(R.id.menu_input_name4);
+    	TextView textView5 = (TextView)findViewById(R.id.menu_input_name5);
+
+    	TextView pathView1 = (TextView)findViewById(R.id.menu_input_path1);
+    	TextView pathView2 = (TextView)findViewById(R.id.menu_input_path2);
+    	TextView pathView3 = (TextView)findViewById(R.id.menu_input_path3);
+    	TextView pathView4 = (TextView)findViewById(R.id.menu_input_path4);
+    	TextView pathView5 = (TextView)findViewById(R.id.menu_input_path5);
+    	
+    	final ArrayList<String> mList = RecentFiles.getRecentFiles();
+    	int size = mList.size();
+    	if (size > 0){
+    		textView1.setText(getFileName(mList.get(0)));
+    		pathView1.setText(mList.get(0));
+    		itemView1.setVisibility(View.VISIBLE);
+    		size--;
+    	}
+    	if (size > 0){
+    		textView2.setText(getFileName(mList.get(1)));
+    		pathView2.setText(mList.get(0));
+    		itemView2.setVisibility(View.VISIBLE);
+    		size--;
+    	}
+    	if (size > 0){
+    		textView3.setText(getFileName(mList.get(2)));
+    		pathView3.setText(mList.get(0));
+    		itemView3.setVisibility(View.VISIBLE);
+    		size--;
+    	}
+    	if (size > 0){
+    		textView4.setText(getFileName(mList.get(3)));
+    		pathView4.setText(mList.get(0));
+    		itemView4.setVisibility(View.VISIBLE);
+    		size--;
+    	}
+    	if (size > 0){
+    		textView5.setText(getFileName(mList.get(4)));
+    		pathView5.setText(mList.get(0));
+    		itemView5.setVisibility(View.VISIBLE);
+    		size--;
+    	}
+    	
+    	itemView1.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mAfterSave = new Runnable() {
+					@Override
+					public void run() {
+						doOpenFile(new File(mList.get(0)), false);
+					}
+				};
+				closeDrawer();
+				promptSaveDirty();
+			}
+		});
+    	
+    	itemView2.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mAfterSave = new Runnable() {
+					@Override
+					public void run() {
+						doOpenFile(new File(mList.get(1)), false);
+					}
+				};
+				closeDrawer();
+				promptSaveDirty();
+			}
+		});
+    	
+    	itemView3.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mAfterSave = new Runnable() {
+					@Override
+					public void run() {
+						doOpenFile(new File(mList.get(2)), false);
+					}
+				};
+				closeDrawer();
+				promptSaveDirty();
+			}
+		});
+    	
+    	itemView4.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mAfterSave = new Runnable() {
+					@Override
+					public void run() {
+						doOpenFile(new File(mList.get(3)), false);
+					}
+				};
+				closeDrawer();
+				promptSaveDirty();
+			}
+		});
+    	
+    	itemView5.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mAfterSave = new Runnable() {
+					@Override
+					public void run() {
+						doOpenFile(new File(mList.get(4)), false);
+					}
+				};
+				closeDrawer();
+				promptSaveDirty();
+			}
+		});
+	}
+
 	/**
 	 * @see android.app.Activity#onStart()
 	 */
@@ -1038,7 +1169,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 				}
 
 				updateTitle();
-
+				initDrawerMenu(this);
 				return true;
 			} else {
 				Toast.makeText(this, R.string.toast_open_error, Toast.LENGTH_SHORT).show();
@@ -1139,7 +1270,10 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		}
 
 		//Crouton.showText(this, R.string.toast_save_success, Style.CONFIRM);
-		if (show) Toast.makeText(getApplicationContext(), R.string.toast_save_success, Toast.LENGTH_SHORT).show();
+		if (show) {
+			Toast.makeText(getApplicationContext(), R.string.toast_save_success, Toast.LENGTH_SHORT).show();
+			initDrawerMenu(this);
+			}
 
 		runAfterSave();
 	}
@@ -1972,7 +2106,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	protected String mCurrentFilePath;
 	/** the name of the file currently opened */
 	protected String mCurrentFileName;
-	/** the runable to run after a save */
+	/** the runnable to run after a save */
 	protected Runnable mAfterSave; // Mennen ? Axe ?
 
 	/** is dirty ? */
