@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 
 import com.hipipal.texteditor.common.Constants;
@@ -19,10 +20,10 @@ import greendroid.widget.QuickActionBar;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 import greendroid.widget.item.DrawableItem;
+import greendroid.widget.item.LongTextItem;
 import greendroid.widget.item.TextItem;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -30,7 +31,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -40,14 +40,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-
+/*
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-
+*/
 public class TedLocalActivity extends _ABaseAct implements Constants {
 	private static final String TAG = "local";
 
@@ -76,8 +76,8 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
         setActionBarContentView(R.layout.m_ted_local);
         setTitle(R.string.app_name);
         
-        //initWidgetTabItem(7);
-		//initAD(TAG);
+        initWidgetTabItem(7);
+		initAD(TAG);
         
     	ListView listView = (ListView)findViewById(android.R.id.list);
     	//listView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.v_local_bar, null));
@@ -92,7 +92,11 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 			@Override
 			public void onItemClick(AdapterView<?> l, View view, int position, long id) {
 			    	final TextItem textItem = (TextItem) l.getAdapter().getItem(position);
-			    	onListItemClick(view, textItem, position);
+			    	if (mBarT!=null && mBarT.isShowing()) {
+			    	} else {
+			    		onListItemClick(view, textItem, position);
+
+			    	}
 			}
         });
         listView.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -108,9 +112,17 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 			}
         	
         });
+        
     	String root = NAction.getDefaultRoot(getApplicationContext());
+    	String code = NAction.getCode(this);
     	if (root.equals("")) {
-    		root = Environment.getExternalStorageDirectory().getAbsolutePath().toString()+"/com.hipipal.qpyplus";
+    		if (code.startsWith("qpy")) {
+    			root = Environment.getExternalStorageDirectory().getAbsolutePath().toString()+"/com.hipipal.qpyplus";
+    	
+    		} else {
+        		root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
+
+    		}
     	}
     	
         curArtistDir = new Stack<String>();
@@ -157,7 +169,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 		case REQUEST_RECENT:
 			ImageButton ln = (ImageButton)findViewById(R.id.left_nav);
 			ln.setImageResource(R.drawable.transparent);
-			rb.setVisibility(View.VISIBLE);
+			rb.setVisibility(View.GONE);
 			setTitle(R.string.title_open_recent);
 			break;
 		case REQUEST_OPEN:
@@ -181,24 +193,6 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
         
     }
     
-    /*@TargetApi(3)
-	@SuppressWarnings("rawtypes")
-	private class CacheAvaiDirs extends AsyncTask {
-		@Override
-		protected Object doInBackground(Object... arg0) {
-            MyApp.getInstance().getAvaiDirs("", true,true);
-    		Log.d(TAG, "doInBackground end");
-    		updatePositionHandler.sendEmptyMessage(0);
-            return null;
-		}
-    }
-	public Handler updatePositionHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-    		myloadContent("", -1);
-		}
-	};*/
-    
     @Override
     public void onResume() {
     	myloadContent("", -1);
@@ -207,24 +201,9 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     	super.onResume();
     }
     
-	@Override
-	protected void onStop() {
-		finish();
-		super.onStop();
-	}
-    
     public void onNotify(View v) {
     }
     
-    /*@Override
-    public boolean onKeyDown(int keycode, KeyEvent event) {
-    	if (keycode == KeyEvent.KEYCODE_BACK) {
-	    	boolean ret = onBack();
-	    	if (ret) return ret;
-    	}
-    	
-    	return super.onKeyDown(keycode, event);
-    }*/
     
     public boolean onTop() {
     	if (curArtistDir.size() == 1) {
@@ -286,7 +265,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 	
     @SuppressLint("DefaultLocale")
 	public void myloadContent(String dirname, int position) {    
-    	
+    	String code = NAction.getCode(getApplicationContext());
     	if (request == REQUEST_RECENT) {
 	    	adapter.clear();
 	    	adapter.add(new TextItem(getString(R.string.info_recent)));
@@ -294,7 +273,8 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 	    	for (int i=0;i<mList.size();i++) {
 	    		String item = mList.get(i);
 	    		
-	    		DrawableItem sItem = new DrawableItem(item,R.drawable.file_text);
+	    		LongTextItem sItem = new LongTextItem(item);
+	    		
 				sItem.setTag(0, "");
 				sItem.setTag(1, item);
 				adapter.add(sItem);
@@ -322,14 +302,14 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 		    	//int filesCount;
 		    	
 		    	adapter.clear();
-		    	adapter.add(new TextItem(MessageFormat.format(getString(R.string.current_dir), curDir)));
+		    	adapter.add(new LongTextItem(MessageFormat.format(getString(R.string.current_dir), curDir)));
 		    	//reduceFiles(curDir);
 		    	
 		    	try {
 		
 		        	File[] files = FileHelper.getABSPath(curDir).listFiles();
 		        	if (files!=null) {
-			        	//Arrays.sort(files, sortType);
+			        	Arrays.sort(files, sortTypeByName);
 		        		//int index = 0;
 						for (final File file : files) {
 							//index ++;
@@ -344,376 +324,53 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 								adapter.add(sItem);
 								
 							} else {
-								String ext = FileHelper.getExt(filename.toLowerCase(), "");
-								if (!ext.equals("") && CONF.MUEXT.contains("#"+ext+"#")) {
-									//long size = file.length();								
-									//String timeStr = DateTimeHelper.converTime(file.lastModified()/1000, getResources().getStringArray(R.array.time_labels));
-									//final Uri uFile = Uri.fromFile(file);
-									
-									//
-									//String mCover[] = cDL.get(file.getName(), CONF.CACHE_TYPE_COVER);
-									//String[] syncStat = cDL.get(file.getName(), CONF.CACHE_TYPE_SYNC_DROPBOX);
-									/*int statImg = 0;
-									
-									if (syncStat[0].equals("")) {
-										statImg = 0;
-									} else if (syncStat[0].equals("0")) {
-										statImg = R.drawable.ic_upload;
-										
-									} else if (syncStat[0].equals("1")) {
-										statImg = R.drawable.bsync_dropbox_d;	// sucess
-										
-									} else {
-										statImg = R.drawable.ic_warning;	// error
-									}*/
-										
-						//icons from https://github.com/teambox/Free-file-icons 
-									
-						if(filename.endsWith(".aac")){ 
-						                sItem = new DrawableItem(filename, R.drawable.aac);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".ai")){ 
-						                sItem = new DrawableItem(filename, R.drawable.ai);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".aiff")){ 
-						                sItem = new DrawableItem(filename, R.drawable.aiff);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".asc")){
-						}else if(filename.endsWith(".asm")){
-										sItem = new DrawableItem(filename, R.drawable.asm);
-										sItem.setTag(0, "");
-										sItem.setTag(1, fullfn);
-										adapter.add(sItem);
-						}else if(filename.endsWith(".avi")){ 
-						                sItem = new DrawableItem(filename, R.drawable.avi);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".bmp")){ 
-						                sItem = new DrawableItem(filename, R.drawable.bmp);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".c")){ 
-						                sItem = new DrawableItem(filename, R.drawable.c);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".cer")){
-						}else if(filename.endsWith(".cfg")){
-						}else if(filename.endsWith(".cpp")){ 
-						                sItem = new DrawableItem(filename, R.drawable.cpp);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".css")){ 
-						                sItem = new DrawableItem(filename, R.drawable.css);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".dat")){ 
-						                sItem = new DrawableItem(filename, R.drawable.dat);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".dmg")){ 
-						                sItem = new DrawableItem(filename, R.drawable.dmg);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".doc")){ 
-						                sItem = new DrawableItem(filename, R.drawable.doc);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".dotx")){ 
-						                sItem = new DrawableItem(filename, R.drawable.dotx);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".dwg")){ 
-						                sItem = new DrawableItem(filename, R.drawable.dwg);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".dxf")){ 
-						                sItem = new DrawableItem(filename, R.drawable.dxf);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".eps")){ 
-						                sItem = new DrawableItem(filename, R.drawable.eps);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".exe")){ 
-						                sItem = new DrawableItem(filename, R.drawable.exe);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".flv")){ 
-						                sItem = new DrawableItem(filename, R.drawable.flv);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".gif")){ 
-						                sItem = new DrawableItem(filename, R.drawable.gif);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".h")){ 
-						                sItem = new DrawableItem(filename, R.drawable.h);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".hpp")){ 
-						                sItem = new DrawableItem(filename, R.drawable.hpp);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".htm")){
-						}else if(filename.endsWith(".html")){ 
-						                sItem = new DrawableItem(filename, R.drawable.html);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".ics")){ 
-						                sItem = new DrawableItem(filename, R.drawable.ics);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".iso")){ 
-						                sItem = new DrawableItem(filename, R.drawable.iso);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".java")){ 
-						                sItem = new DrawableItem(filename, R.drawable.java);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".jpg")){ 
-						                sItem = new DrawableItem(filename, R.drawable.jpg);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".js")){
-										sItem = new DrawableItem(filename, R.drawable.js);
-										sItem.setTag(0, "");
-										sItem.setTag(1, fullfn);
-										adapter.add(sItem);
-						}else if(filename.endsWith(".json")){
-										sItem = new DrawableItem(filename, R.drawable.json);
-										sItem.setTag(0, "");
-										sItem.setTag(1, fullfn);
-										adapter.add(sItem);
-						}else if(filename.endsWith(".key")){ 
-						                sItem = new DrawableItem(filename, R.drawable.key);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".lua")){
-										sItem = new DrawableItem(filename, R.drawable.lua);
-										sItem.setTag(0, "");
-										sItem.setTag(1, fullfn);
-										adapter.add(sItem);
-						}else if(filename.endsWith(".log")){
-										sItem = new DrawableItem(filename, R.drawable.log);
-										sItem.setTag(0, "");
-										sItem.setTag(1, fullfn);
-										adapter.add(sItem);
-						}else if(filename.endsWith(".md")){
-						}else if(filename.endsWith(".mid")){ 
-						                sItem = new DrawableItem(filename, R.drawable.mid);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".mm")){
-						}else if(filename.endsWith(".mp3")){ 
-						                sItem = new DrawableItem(filename, R.drawable.mp3);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".mp4")){ 
-						                sItem = new DrawableItem(filename, R.drawable.mp4);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".mpg")){ 
-						                sItem = new DrawableItem(filename, R.drawable.mpg);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".odf")){ 
-						                sItem = new DrawableItem(filename, R.drawable.odf);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".ods")){ 
-						                sItem = new DrawableItem(filename, R.drawable.ods);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".odt")){ 
-						                sItem = new DrawableItem(filename, R.drawable.odt);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".otp")){ 
-						                sItem = new DrawableItem(filename, R.drawable.otp);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".ots")){ 
-						                sItem = new DrawableItem(filename, R.drawable.ots);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".ott")){ 
-						                sItem = new DrawableItem(filename, R.drawable.ott);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".pdf")){ 
-						                sItem = new DrawableItem(filename, R.drawable.pdf);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".pem")){
-						}else if(filename.endsWith(".pgp")){
-										sItem = new DrawableItem(filename, R.drawable.pgp);
-										sItem.setTag(0, "");
-										sItem.setTag(1, fullfn);
-										adapter.add(sItem);
-						}else if(filename.endsWith(".php")){ 
-						                sItem = new DrawableItem(filename, R.drawable.php);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".pl")){
-						}else if(filename.endsWith(".png")){ 
-						                sItem = new DrawableItem(filename, R.drawable.png);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".ppt")){ 
-						                sItem = new DrawableItem(filename, R.drawable.ppt);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".psd")){ 
-						                sItem = new DrawableItem(filename, R.drawable.psd);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".pub")){
-						}else if(filename.endsWith(".py")){ 
-						                sItem = new DrawableItem(filename, R.drawable.py);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".qt")){ 
-						                sItem = new DrawableItem(filename, R.drawable.qt);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".rar")){ 
-						                sItem = new DrawableItem(filename, R.drawable.rar);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".rb")){ 
-						                sItem = new DrawableItem(filename, R.drawable.rb);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".rtf")){ 
-						                sItem = new DrawableItem(filename, R.drawable.rtf);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".s")){
-						}else if(filename.endsWith(".sh")){
-										sItem = new DrawableItem(filename, R.drawable.sh);
-										sItem.setTag(0, "");
-										sItem.setTag(1, fullfn);
-										adapter.add(sItem);
-						}else if(filename.endsWith(".sql")){ 
-						                sItem = new DrawableItem(filename, R.drawable.sql);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".tga")){ 
-						                sItem = new DrawableItem(filename, R.drawable.tga);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".tgz")){ 
-						                sItem = new DrawableItem(filename, R.drawable.tgz);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".tiff")){ 
-						                sItem = new DrawableItem(filename, R.drawable.tiff);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".txt")){ 
-						                sItem = new DrawableItem(filename, R.drawable.txt);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".wav")){ 
-						                sItem = new DrawableItem(filename, R.drawable.wav);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".xls")){ 
-						                sItem = new DrawableItem(filename, R.drawable.xls);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".xlsx")){ 
-						                sItem = new DrawableItem(filename, R.drawable.xlsx);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".xml")){ 
-						                sItem = new DrawableItem(filename, R.drawable.xml);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".yml")){ 
-						                sItem = new DrawableItem(filename, R.drawable.yml);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);
-						}else if(filename.endsWith(".zip")){ 
-						                sItem = new DrawableItem(filename, R.drawable.zip);
-						                sItem.setTag(0, "");
-						                sItem.setTag(1, fullfn);
-						                adapter.add(sItem);									
-									}else{
-										sItem = new DrawableItem(filename,R.drawable.file_text);
-										sItem.setTag(0, "");
-										sItem.setTag(1, fullfn);
-										adapter.add(sItem);
+								
+								//String ext = FileHelper.getExt(filename.toLowerCase(), "");
+								String lname = filename.toLowerCase();
+								boolean dis = false;
+								if (code.startsWith("qpy")) {
+									if (lname.endsWith(".py") || lname.endsWith(".kv")) {
+										dis = true;
 									}
 									
-		
+								} else if (code.startsWith("lua")) {
+									if (lname.endsWith(".lua")) {
+										dis = true;
+									}
 								} else {
-									sItem = new DrawableItem(filename,R.drawable.file_locked);
-									sItem.setTag(0, "");
-									sItem.setTag(1, fullfn);
-									adapter.add(sItem);
-		
+									dis = true;
 								}
+								
+								if (dis) {
+									int icon;
+									if (lname.endsWith(".py")) {
+										icon = R.drawable.file_qpy;
+									} else if (lname.endsWith(".kv") || lname.endsWith(".ini")) {
+										icon = R.drawable.file_text;
+									} else if (lname.endsWith(".png") || lname.endsWith(".jpg") || lname.endsWith(".jpeg") || lname.endsWith(".gif")) {
+										icon = R.drawable.file_bin;
+									} else if (lname.endsWith(".wav") ||  lname.endsWith(".mp3") || lname.endsWith(".mid")) {
+										icon = R.drawable.file_bin;
+									} else if (lname.endsWith(".flv") || lname.endsWith(".wmv") || lname.endsWith(".mp4")) {
+										icon = R.drawable.file_bin;
+									} else if (lname.endsWith(".txt") || lname.endsWith(".lua")) {
+										icon = R.drawable.file_text;
+									//} else if (lname.endsWith(".version")) {
+									//	icon = 0;
+									} else {
+										icon = R.drawable.file_unknown;
+									}
+	
+									if (icon!=0) {
+						                sItem = new DrawableItem(filename, icon);
+						                sItem.setTag(0, "");
+						                sItem.setTag(1, fullfn);
+						                adapter.add(sItem);
+									}
+
+								}
+								
+								
 							}
 						}
 					}
@@ -734,31 +391,32 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     
     @SuppressWarnings("deprecation")
 	public void renameItem(final TextItem textItem) {
-    	//Object o1 = textItem.getTag(1);
-		final String fullname = textItem.getTag(1).toString();
-		final File oldf = new File(fullname);
-
-		WBase.setTxtDialogParam(R.drawable.ic_setting, R.string.info_rename, oldf.getName(),
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-				        AlertDialog ad = (AlertDialog) dialog;  
-				        EditText t = (EditText) ad.findViewById(R.id.editText_prompt);
-				        String filename = t.getText().toString().trim();
-				        File newf = new File(oldf.getParent()+"/"+filename);
-				        if (newf.exists()) {
-				        	Toast.makeText(getApplicationContext(), R.string.file_exists, Toast.LENGTH_SHORT).show();
-				        	renameItem(textItem);
-				        } else {
-				        	oldf.renameTo(newf);
-					        myloadContent("", curPosition);
-
-				        }
-
-					}
-				},null);
-		showDialog(_WBase.DIALOG_TEXT_ENTRY+dialogIndex);
-		dialogIndex++;
+    	Object o1 = textItem.getTag(1);
+    	if (o1!=null) {
+			final String fullname = o1.toString();
+			final File oldf = new File(fullname);
+	
+			WBase.setTxtDialogParam(R.drawable.ic_setting, R.string.info_rename, oldf.getName(),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+					        AlertDialog ad = (AlertDialog) dialog;  
+					        EditText t = (EditText) ad.findViewById(R.id.editText_prompt);
+					        String filename = t.getText().toString().trim();
+					        File newf = new File(oldf.getParent()+"/"+filename);
+					        if (newf.exists()) {
+					        	Toast.makeText(getApplicationContext(), R.string.file_exists, Toast.LENGTH_SHORT).show();
+					        	renameItem(textItem);
+					        } else {
+					        	oldf.renameTo(newf);
+						        myloadContent("", curPosition);
+					        }
+	
+						}
+					},null);
+			showDialog(_WBase.DIALOG_TEXT_ENTRY+dialogIndex);
+			dialogIndex++;
+    	}
     }
     
     @SuppressWarnings("deprecation")
@@ -957,6 +615,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     public void onUp(View v) {
     	onTop();
     }
+    /*
     public void cloneRepository() throws IOException, InvalidRemoteException, TransportException, GitAPIException{
     	final Context context = this;
     	LayoutInflater li = LayoutInflater.from(context);
@@ -1038,5 +697,5 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     	//Toast.makeText(this, getCurrentDir(), Toast.LENGTH_SHORT).show();
     	cloneRepository();
     }
-    
+    */
 }

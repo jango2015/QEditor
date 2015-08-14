@@ -73,9 +73,9 @@ public class AdvancedEditText extends EditText implements Constants,
 		
 	}
 
-	public void setFileType(String ft) {
+	/*public void setFileType(String ft) {
 		fileType = ft;
-	}
+	}*/
 	/**
 	 * @see android.widget.TextView#computeScroll()
 	 * @category View
@@ -258,6 +258,8 @@ public class AdvancedEditText extends EditText implements Constants,
 	public void updateFromSettings(String fileType) {
 		Log.d(TAG, "updateFromSettings:"+fileType);
 
+		this.fileType = fileType;
+		
 		if (isInEditMode()) {
 			return;
 		}
@@ -320,15 +322,8 @@ public class AdvancedEditText extends EditText implements Constants,
 			mMaxSize = null;
 		}
 		
-		/*if (this.fileType!=null) {
-			if (this.fileType.equals("py")) {
-				init();
-			}
-		} else if (fileType!=null && !fileType.equals("")) {*/
-			//this.fileType = fileType;
-		//Log.d(TAG, "fileType:"+fileType);
-		Log.d(TAG, "init");
-		if (fileType.equals("py")) {
+		if ((fileType.equals("py") || fileType.equals("lua"))
+				&& this.getLineCount()<Settings.MAX_LINES_NUM_WITH_SYNTAX) {
 			//Log.d(TAG, "init OK");
 			isWatch = true;
 			init();
@@ -419,9 +414,23 @@ public class AdvancedEditText extends EditText implements Constants,
 
 	private static final Pattern line = Pattern.compile(
 		".*\\n" );
+	
 	private static final Pattern numbers = Pattern.compile(
 		"\\b(\\d*[.]?\\d+)\\b" );
-	private static final Pattern keywords = Pattern.compile(
+		
+	
+	private Pattern getKw() {
+		if (fileType.equals("py")) {
+			return pyKeywords;
+		} else if (fileType.equals("lua")) {
+			return luaKeywords;
+		} else {
+			return Pattern.compile(
+					"\\b()\\b" );
+		}
+	}
+	
+	private static final Pattern pyKeywords = Pattern.compile(
 		"\\b(break|continue|del|"+
 		"except|exec|finally|"+
 		"pass|print|raise|"+
@@ -433,7 +442,33 @@ public class AdvancedEditText extends EditText implements Constants,
 		"if|elif|else|"+
 		"and|in|is|not|or|"+
 		"import|from|as)\\b" );
-	private static final Pattern builtins = Pattern.compile(
+
+	private static final Pattern luaKeywords = Pattern.compile(
+			"\\b(and|break|do|"+
+			"else|elseif|end|"+
+			"for|function|"+
+			"goto|if|in|"+
+			"local|"+
+			"not|or|"+
+			"repeat|return|then|"+
+			"until|"+
+			"while)\\b" );
+
+	private Pattern getBuiltins() {
+		if (fileType.equals("py")) {
+			return pyBuiltins;
+		} else if (fileType.equals("lua")) {
+			return luaBuiltins;
+
+		} else {
+			return Pattern.compile(
+					"\\b()\\b" );
+		}
+	}
+	private static final Pattern luaBuiltins = Pattern.compile(
+			"\\b(print|false|true|nil)\\b" );
+	
+	private static final Pattern pyBuiltins = Pattern.compile(
 		"\\b(True|False|bool|enumerate|set|frozenset|help|"+
 		"reversed|sorted|sum|"+
 		"Ellipsis|None|NotImplemented|__import__|abs|"+
@@ -461,14 +496,32 @@ public class AdvancedEditText extends EditText implements Constants,
 		"UnicodeTranslateError|"+
 		"UserWarning|ValueError|Warning|WindowsError|"+
 		"ZeroDivisionError)\\b" );
-	private static final Pattern comments = Pattern.compile(
+	
+	private Pattern getComments() {
+		if (fileType.equals("py")) {
+			return pyComments;
+		} else if (fileType.equals("lua")) {
+			return luaComments;
+		} else {
+			return Pattern.compile(
+					"" );
+
+		}
+	}
+	private static final Pattern pyComments = Pattern.compile(
 		"/\\*(?:.|[\\n\\r])*?\\*/|"+
 		"#.*\n|"+
 		"\"\"\"(?:.|[\\n\\r])*?\"\"\"|"+
 		"\'\'\'(?:.|[\\n\\r])*?\'\'\'");
+
+	private static final Pattern luaComments = Pattern.compile(
+			"--.*\n");
+
+	
 	private static final Pattern trailingWhiteSpace = Pattern.compile(
 		"[\\t ]+$",
 		Pattern.MULTILINE );
+	
 	private static final Pattern quotes = Pattern.compile(
 			"\"([^[\"\\n]])+\"|"+
 			"\'([^[\'\\n]])+\'"
@@ -652,7 +705,7 @@ public class AdvancedEditText extends EditText implements Constants,
 					m.end(),
 					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );*/
 
-			for( Matcher m = keywords.matcher( e );
+			for( Matcher m = getKw().matcher( e );
 				m.find(); )
 				e.setSpan(
 					new ForegroundColorSpan( COLOR_KEYWORD ),
@@ -660,7 +713,7 @@ public class AdvancedEditText extends EditText implements Constants,
 					m.end(),
 					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );
 
-			for( Matcher m = builtins.matcher( e );
+			for( Matcher m = getBuiltins().matcher( e );
 				m.find(); )
 				e.setSpan(
 					new ForegroundColorSpan( COLOR_BUILTIN ),
@@ -668,7 +721,7 @@ public class AdvancedEditText extends EditText implements Constants,
 					m.end(),
 					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );
 
-			for( Matcher m = comments.matcher( e );
+			for( Matcher m = getComments().matcher( e );
 				m.find(); )
 				e.setSpan(
 					new ForegroundColorSpan( COLOR_COMMENT ),
