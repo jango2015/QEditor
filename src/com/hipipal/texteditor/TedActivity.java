@@ -103,8 +103,6 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (BuildConfig.DEBUG)
-			Log.d(TAG, "onCreate");
 
 		//setContentView(R.layout.layout_editor);
         setActionBarContentView(R.layout.layout_editor);
@@ -116,7 +114,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
         if (code.equals("texteditor")) {    
             ImageButton homeBtn = (ImageButton)findViewById(R.id.gd_action_bar_home_item);
-            homeBtn.setImageResource(R.drawable.icon_nb_editor);
+            homeBtn.setImageResource(R.drawable.ic_menu_white);
             
 			checkUpdate(CONF.BASE_PATH);
 			

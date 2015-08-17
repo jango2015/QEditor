@@ -216,7 +216,7 @@
                 android:theme="@style/Theme"
                 android:launchMode="singleTask"
                 android:label="@string/console_name"
-                android:icon="@drawable/icon_back"
+                android:icon="@drawable/ic_arrow_back_white"
                 android:configChanges="keyboard|keyboardHidden|orientation"
                 android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
             <intent-filter>

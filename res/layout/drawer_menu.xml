@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/menu_head_img"
             android:layout_margin="15dp"
-            android:text="最近文件"
+            android:text="@string/menu_open_recent"
             android:textSize="18sp"
             android:paddingBottom="15dp" />
     </RelativeLayout>
@@ -47,7 +47,6 @@
             android:layout_height="wrap_content"
             android:textColor="#fff"
             android:textSize="18sp"
-        	android:onClick="onClickText1"
              />
 
         <TextView
@@ -56,7 +55,6 @@
             android:layout_height="wrap_content"
             android:textColor="#fff"
             android:textSize="12sp"
-        	android:onClick="onClickText1"
              />
             <View android:layout_height="1px" 
                 android:layout_marginTop="3px"
@@ -89,7 +87,7 @@
             android:layout_height="wrap_content"
             android:textColor="#fff"
             android:textSize="12sp"
-        	android:onClick="onClickText1"
+        	
              />
             <View android:layout_height="1px" 
                 android:layout_marginTop="3px"
@@ -122,7 +120,7 @@
             android:layout_height="wrap_content"
             android:textColor="#fff"
             android:textSize="12sp"
-        	android:onClick="onClickText1"
+        	
              />
             <View android:layout_height="1px" 
                 android:layout_marginTop="3px"
@@ -154,7 +152,7 @@
             android:layout_height="wrap_content"
             android:textColor="#fff"
             android:textSize="12sp"
-        	android:onClick="onClickText1"
+        	
              />
             <View android:layout_height="1px" 
                 android:layout_marginTop="3px"
@@ -187,7 +185,7 @@
             android:layout_height="wrap_content"
             android:textColor="#fff"
             android:textSize="12sp"
-        	android:onClick="onClickText1"
+        	
              />
             <View android:layout_height="1px" 
                 android:layout_marginTop="3px"
