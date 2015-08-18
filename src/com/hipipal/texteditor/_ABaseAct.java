@@ -1,6 +1,7 @@
 package com.hipipal.texteditor;
 
 import greendroid.graphics.drawable.ActionBarDrawable;
+import greendroid.widget.ActionBarItem;
 import greendroid.widget.NormalActionBarItem;
 import greendroid.widget.QuickAction;
 
@@ -14,6 +15,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -27,25 +29,41 @@ public class _ABaseAct extends GDBase {
     protected static final int SCRIPT_EXEC_PY = 2235;  
     protected static final int SCRIPT_EXEC_CODE = 1235;  
 
+	public void onNotify(View v) {
+	}
+	
 	@SuppressLint("NewApi")
 	protected void initWidgetTabItem(int flag) {
-		/*addActionBarItem(getGDActionBar()
-        		.newActionBarItem(NormalActionBarItem.class)
-        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_save_as)), 10);*/
-		
 		String code = NAction.getCode(getApplicationContext());
-		if (code.equals("qpyplus") || code.equals("qpy3")) {
-			addActionBarItem(getGDActionBar()
-		        		.newActionBarItem(NormalActionBarItem.class)
-		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
+		if (code.equals("qpyplus") || code.equals("qpy3") || code.startsWith("lua5")) {
+			if (flag == 5) {
 
-			
-		    addActionBarItem(getGDActionBar()
+				addActionBarItem(getGDActionBar()
+			        		.newActionBarItem(NormalActionBarItem.class)
+			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
+
+			    /*addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
-		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_new_a)), 30);
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_collection_new_2)), 35);
+*/
+				
+			    addActionBarItem(getGDActionBar()
+			        		.newActionBarItem(NormalActionBarItem.class)
+			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_new_a)), 30);
+
+			    addActionBarItem(getGDActionBar()
+		        		.newActionBarItem(NormalActionBarItem.class)
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
+
+			} else {
+			    addActionBarItem(getGDActionBar()
+		        		.newActionBarItem(NormalActionBarItem.class)
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
+
+			}
 		    
-		} else if (code.equals("texteditor")) {
-			if (flag == 0) {
+		} else if (code.contains("texteditor")) {
+			if (flag == 5) {
 				addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
 		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
@@ -57,12 +75,30 @@ public class _ABaseAct extends GDBase {
 	        		.newActionBarItem(NormalActionBarItem.class)
 	        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
 		} else {
-			addActionBarItem(getGDActionBar()
-	        		.newActionBarItem(NormalActionBarItem.class)
-	        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_save_as)), 10);
+			
+			
 		}
 	}
  
+	public void onSetting(View v) {
+		Intent intent = new Intent();
+		intent.setClassName(this.getPackageName(), this.getPackageName()+".MSettingAct");
+		startActivity(intent);
+	}
+
+	
+	@Override
+    public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+    	switch (item.getItemId()) {
+    	case 40:
+    			onSetting(null);
+    			break;
+
+    			//mBar.show(item.getItemView());
+
+    	}
+    	return 	super.onHandleActionBarItemClick(item, position);
+    }
 
 
 
@@ -86,6 +122,47 @@ public class _ABaseAct extends GDBase {
     	super.onConfigurationChanged(newConfig);
     }
     
+    @SuppressWarnings("deprecation")
+	public void callLuaApi(String flag, String param, String luaCode) {
+		String code = NAction.getCode(this);		
+		// todo
+		if (code.contains("lua") || (NUtil.checkAppInstalledByName(this, "com.quseit.lua5") || NUtil.checkAppInstalledByName(this, "com.quseit.lua5pro"))) {
+			String scmd = "lua";
+	    	if (Build.VERSION.SDK_INT >= 20) { 
+	    		scmd = "lua-android5";
+	
+	    	} 
+	
+			String[] args = {scmd+" "+param+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
+			execInConsole(args);
+		} else {
+    		WBase.setTxtDialogParam(0, R.string.pls_install_lua, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					
+    				String plgUrl = NAction.getExtP(getApplicationContext(), "ext_plugin_pkg4");
+    				if (plgUrl.equals("")) {
+    					plgUrl = CONF.EXT_PLG_URL4;
+    				}
+    				try {
+						Intent intent = NAction.openRemoteLink(getApplicationContext(), plgUrl);
+						startActivity(intent);
+    				} catch (Exception e) {
+    					plgUrl = CONF.EXT_PLG_URL4;
+						Intent intent = NAction.openRemoteLink(getApplicationContext(), plgUrl);
+						startActivity(intent);
+    				}
+				}
+				}, null);
+    		
+    		showDialog(_WBase.DIALOG_EXIT+dialogIndex);
+    		dialogIndex++;
+
+
+		}
+    }
+
+    
     /**
      * call the Qpython API
      * @param flag
@@ -94,19 +171,7 @@ public class _ABaseAct extends GDBase {
      */
     @SuppressWarnings("deprecation")
 	public void callPyApi(String flag, String param, String pyCode) {
-    	//Log.d(TAG, "callPyApi:"+pyCode);
-    	//String appCode = NAction.getCode(getApplicationContext());
-    	//String proxyHost = NAction.getProxyHost(getApplicationContext());
-    	//String proxyPort = NAction.getProxyPort(getApplicationContext());
     	String proxyCode = "";
-    	/*if (!proxyHost.equals("")) {
-    		if (proxyPort.equals("")) {
-    			proxyPort = "80";
-    		}
-    		proxyCode = "PROXY = {'http':'"+proxyHost+":"+proxyPort+"'}\n";
-    	} else {
-    		proxyCode = "PROXY = {}\n";
-    	}*/
     	String extPlgPlusName = com.zuowuxuxi.config.CONF.EXT_PLG_PLUS;
     	String extPlg3Name = CONF.EXT_PLG_3;
 		String extPlgName = NAction.getExtP(getApplicationContext(), "ext_plugin");
@@ -119,10 +184,6 @@ public class _ABaseAct extends GDBase {
 			plgUrl = com.zuowuxuxi.config.CONF.EXT_PLG_URL;
 		}
 		String localQPylib = "com.hipipal.qpylib";
-		// call local api
-		//if (!appCode.startsWith("xx")) {
-
-		//} else {
 		try {
 			String localPlugin = this.getPackageName();
 			Intent intent = new Intent();
@@ -163,7 +224,7 @@ public class _ABaseAct extends GDBase {
 		
 				} else {
 					
-		    		WBase.setTxtDialogParam(0, R.string.pls_install_ext_plg, new DialogInterface.OnClickListener() {
+		    		WBase.setTxtDialogParam(0, R.string.pls_install_qpy, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 		    				String plgUrl = NAction.getExtP(getApplicationContext(), "ext_plugin_pkg3");
@@ -222,7 +283,7 @@ public class _ABaseAct extends GDBase {
 					
 				}  else {
 								
-		    		WBase.setTxtDialogParam(0, R.string.pls_install_ext_plg, new DialogInterface.OnClickListener() {
+		    		WBase.setTxtDialogParam(0, R.string.pls_install_qpy, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 		
@@ -261,15 +322,12 @@ public class _ABaseAct extends GDBase {
 
 	@Override
 	public Class<?> getUpdateSrv() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
     @SuppressWarnings("deprecation")
 	@SuppressLint("DefaultLocale")
 	public void playFromRemote(String link) {
-    	//String process = NUtil.getCpuProcessFromByInfo();
-    	//String features = NUtil.getCpuFeaturesFromByInfo();
     	String code = NAction.getCode(getApplicationContext());
         if (code.startsWith("mn")) {
         	
@@ -305,18 +363,6 @@ public class _ABaseAct extends GDBase {
 	    		intent.setDataAndType(uri , "video/*");
 	    		startActivity(intent);
 			} else {
-			// 如果cpu为armv7 并且 系统已经安装了A8 Player, 则使用A8Player
-			/*if (NUtil.checkAppInstalledByName(getApplicationContext(), a8Name)) {
-	        	//Toast.makeText(getApplicationContext(), R.string.using_optimized_play, Toast.LENGTH_SHORT).show();
-	        	
-	    		Intent intent = new Intent();
-	    		intent.setClassName(a8Name, "com.hipipal.mna8.PLAPlayerAct");
-	    		intent.setAction("android.intent.action.VIEW");
-	    		Uri uri = Uri.parse(link);
-	    		intent.setDataAndType(uri , "video/*");
-	    		startActivity(intent);
-	    		
-			} else {*/
 				
 				boolean useDefault = false;
 				int indexOfDot = link.lastIndexOf('.');
@@ -346,23 +392,9 @@ public class _ABaseAct extends GDBase {
 					intent.setDataAndType(uri , "video/*");
 					startActivity(intent);
 				}
-				/*
-		    	Intent intent = new Intent(this, PLAPlayerAct.class);
-				ArrayList<Uri> playlist = new ArrayList<Uri>();
-				Uri selectedUri = null;
-				Uri tempUri = Uri.parse(link);
-				playlist.add(tempUri);
-				selectedUri = tempUri;
-				intent.putExtra("selected", 0);
-				intent.putExtra("playlist", playlist);
-				intent.setAction(Intent.ACTION_VIEW);
-				intent.setData(selectedUri);
-				this.startActivity(intent);  */
 			}
 			
-        } else {	// 不是MVP
-        	//
-        	
+        } else {	// 不是MVP        	
 			String pkgName = NAction.getExtP(getApplicationContext(), "extend_a8_pkg");
 			if (pkgName.equals("")) {
 				pkgName = CONF.A8_PLAY;
@@ -408,11 +440,6 @@ public class _ABaseAct extends GDBase {
 								Intent intent = NAction.openRemoteLink(getApplicationContext(), pkgUrl);
 								startActivity(intent);
 							}
-							/*} else {
-								Intent intent = NAction.openMarketLink(pkgUrl);
-								startActivity(intent);
-	
-							}*/
 						}
 					}, null);
 		    		showDialog(_WBase.DIALOG_EXIT+dialogIndex);
@@ -422,7 +449,16 @@ public class _ABaseAct extends GDBase {
         }
     }
     
+    private static final int SCRIPT_CONSOLE_CODE = 1237;
 
+    public void execInConsole(String[] args) {
+    	Intent intent = new Intent();
+		intent.setClassName(this.getPackageName(), "jackpal.androidterm.Term");
+		intent.putExtra(CONF.EXTRA_CONTENT_URL0, "main");
+		intent.putExtra("ARGS", args);
+		startActivityForResult(intent,SCRIPT_CONSOLE_CODE);
+
+    }
 
 	@Override
 	public String confGetUpdateURL(int flag) {

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hipipal.texteditor"
     android:installLocation="auto"
-    android:versionCode="3"
-    android:versionName="1.0" >
+    android:versionCode="13"
+    android:versionName="1.3" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -13,26 +13,15 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <permission
-        android:name="com.hipipal.texteditor.permission.TED_INTERNAL"
-        android:label="@string/permission_internal"
-        android:protectionLevel="signature" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.hipipal.texteditor.permission.TED_INTERNAL" />
 
     <application
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/micon_editor"
         android:label="@string/app_name"
         android:theme="@style/Theme.GDCatalog"
         android:name=".MNApp" >
         
-        <uses-library android:required="false" android:name="com.sec.android.app.multiwindow" />
-        <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" />
-		        
-
         <!-- Ted main activity ... ie a text field :) -->
 
         <activity android:name=".MTubebook" android:label="@string/app_name" android:screenOrientation="user" android:configChanges="orientation|keyboardHidden"/>                
@@ -40,15 +29,15 @@
         <activity
         	android:theme="@style/Theme.GDCatalog"
             android:name=".TedActivity"
+			android:screenOrientation="user"             
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|fontScale|screenSize|smallestScreenSize"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize">
 
             <!-- Launcher Intent -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+	            <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
 
             <!-- Default Text file view / edit -->
@@ -220,6 +209,62 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/ted_widget" />
         </receiver>
-    </application>
+        
+        
+        <activity android:name="jackpal.androidterm.Term"
+        		android:exported="true"
+                android:theme="@style/Theme"
+                android:launchMode="singleTask"
+                android:label="@string/console_name"
+                android:icon="@drawable/ic_arrow_back_white"
+                android:configChanges="keyboard|keyboardHidden|orientation"
+                android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
+        <activity-alias android:name="jackpal.androidterm.TermInternal"
+                android:targetActivity="jackpal.androidterm.Term"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="jackpal.androidterm.private.OPEN_NEW_WINDOW" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="jackpal.androidterm.private.SWITCH_WINDOW" />
+            </intent-filter>
+        </activity-alias>
+        <activity android:name="jackpal.androidterm.RemoteInterface"
+                android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="jackpal.androidterm.OPEN_NEW_WINDOW" />
+            </intent-filter>
+        </activity>
+        <activity-alias android:name="jackpal.androidterm.RunScript"
+                android:targetActivity="jackpal.androidterm.RemoteInterface"
+                android:permission="jackpal.androidterm.permission.RUN_SCRIPT">
+            <intent-filter>
+                <action android:name="jackpal.androidterm.RUN_SCRIPT" />
+            </intent-filter>
+        </activity-alias>
+        <activity android:name="jackpal.androidterm.TermPreferences"
+                android:label="@string/preferences" />
+        <activity android:name="jackpal.androidterm.WindowList"
+                android:label="@string/window_list" />
+        <service android:name="jackpal.androidterm.TermService" />   
+        
+        <!--uses-library android:required="false" android:name="com.sec.android.app.multiwindow" />
+        <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" />
+        <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W" android:resource="@dimen/app_defaultsize_w" />
+		<meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:resource="@dimen/app_defaultsize_h" />
+		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:resource="@dimen/app_minimumsize_w" />
+		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:resource="@dimen/app_minimumsize_h" />     
+        
+        <meta-data android:name="com.google.android.gms.version" 
+        	android:value="@integer/google_play_services_version" />
+            	
+    	<activity android:name="com.google.android.gms.ads.AdActivity"
+              android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/-->
+
+    </application>
 </manifest>

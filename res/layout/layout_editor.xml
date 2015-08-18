@@ -50,6 +50,18 @@
 		android:background="@null"
 		android:onClick="onRight"		
 		/>
+
+		<ImageButton
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:padding="5.0dip"
+		android:layout_margin="0.0dip"
+		android:src="@drawable/ic_foword1" 
+		android:background="@null"
+		android:onClick="onGotoLine"		
+		/>
+
 		
 		<ImageButton
 		android:layout_width="0dp"
@@ -111,20 +123,22 @@
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
 		android:padding="5.0dip"
-		android:src="@drawable/ic_from_website" 
+		android:src="@drawable/ic_collections_history" 
 		android:background="@null"
-		android:onClick="onBrowser"
-		/-->
-				
+		android:onClick="onHistory"
+		/-->		
+		
 		<ImageButton
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
+		android:id="@+id/snip_button"
 		android:padding="5.0dip"
 		android:src="@drawable/ic_storage" 
 		android:background="@null"
-		android:onClick="onHistory"
-		/>		
+		android:onClick="onSnippets"
+		/>
+				
 
 		<ImageButton
 		    android:id="@+id/help_button"
@@ -132,10 +146,10 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
 		    android:background="@null"
-		    android:onClick="onSetting"
+		    android:onClick="onMore"
 		    android:padding="5.0dip"
-		    android:src="@drawable/ic_collections_history" />
-		
+		    android:src="@drawable/ic_action_overflow_dark" />
+		    
 	</LinearLayout>	
     <include
         android:id="@+id/searchLayout"
@@ -143,5 +157,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         layout="@layout/search" />
+
+	<include layout="@layout/hi_ad_mod"/> 
+        
 
 </LinearLayout>

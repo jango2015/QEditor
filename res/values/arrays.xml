@@ -2,6 +2,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Color themes -->
+    <string-array name="qpy_new">
+        <item>Blank file</item>
+        <item>Script</item>
+        <item>WebApp (Project)</item>
+        <item>ConsoleApp (Project)</item>
+        <item>KivyApp (Project)</item>
+    </string-array>
+    
+    
     <string-array name="color_theme_names">
         <item>Classic</item>
         <item>Negative</item>
@@ -97,4 +106,12 @@
         <item>UTF-8</item>
     </string-array>
 
+    <string-array name="max_lines_num_with_syntax_values">
+        <item>100</item>
+        <item>300</item>
+        <item>600</item>
+        <item>1000</item>
+        <item>2000</item>
+    </string-array>
+    
 </resources>
