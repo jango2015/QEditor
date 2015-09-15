@@ -8,9 +8,7 @@ import greendroid.widget.ActionBarItem;
 import greendroid.widget.QuickActionBar;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
-
 import jackpal.androidterm.util.FileUtils;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -762,7 +760,13 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 				pBtn.setImageResource(R.drawable.ic_from_website);
 			}
 		} 
+		//TODO
 		
+		
+		
+		
+		
+		//运行文件的方法run
 		pBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1066,12 +1070,25 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		}
 	}
 
+
 	/**
 	 * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
 	 */
 	@Override
+	
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		//TODO	
 		switch (keyCode) {
+		case KeyEvent.KEYCODE_F5:
+			Toast.makeText(this,"f5 f5 f5", Toast.LENGTH_SHORT).show();
+		return true;
+		//按tab，输出四个空格
+		case KeyEvent.KEYCODE_TAB:
+			rightIndent();
+			mEditor.setSelection(mEditor.getText().length());
+			Toast.makeText(this,"tab tab tab", Toast.LENGTH_SHORT).show();
+			mEditor.requestFocus();
+			return true;
 		case KeyEvent.KEYCODE_BACK:
 				if (mSearchLayout.getVisibility() != View.GONE)
 					search();
@@ -1890,7 +1907,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 				}
 			}
     	} 
-
+    
 		return super.onKeyDown(keyCoder, event);
 	}
 	
@@ -2472,6 +2489,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	@SuppressLint("NewApi")
 	@Override
 	public boolean onKeyShortcut(int keyCode, KeyEvent event){
+		
 		if(event.isCtrlPressed()){
 			switch (keyCode) {
 			case KeyEvent.KEYCODE_F: 
@@ -2503,13 +2521,15 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			}
 		}
 		 Log.d(TAG, "TAG INFORMATION keycode:"+keyCode); 
-		switch (keyCode) {
-        case KeyEvent.KEYCODE_TAB:
-        	rightIndent();
-            break;
-        default:
-        	  break;
-    }
+		//TODO
+
+		 /*switch (keyCode) {
+				case KeyEvent.KEYCODE_TAB:
+				rightIndent();
+	            	break;
+				default:
+					break;
+	    } */
 		return false;
 	}
 	
