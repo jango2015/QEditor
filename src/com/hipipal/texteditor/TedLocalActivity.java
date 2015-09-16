@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -60,7 +61,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 	private int request;
 
 	private Stack<String> prevDir;
-	
+	private int _GLOBAL_DEPTH=0;
     @SuppressWarnings({ "deprecation", "unchecked", "rawtypes" })
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
         setActionBarContentView(R.layout.m_ted_local);
         setTitle(R.string.app_name);
         
-        initWidgetTabItem(7);
+        //initWidgetTabItem(7);
 		initAD(TAG);
         
     	ListView listView = (ListView)findViewById(android.R.id.list);
@@ -127,10 +128,11 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     	
         curArtistDir = new Stack<String>();
         String[] xx = root.split("/");
+        _GLOBAL_DEPTH = xx.length;
         curArtistDir.push("/");
         if (xx.length>1) {
 	        for (int i=0;i<xx.length;i++) {
-	        	Log.d(TAG, "seq:"+xx[i]);
+	        	//Log.d(TAG, "seq:"+xx[i]);
 	        	if (!xx[i].equals("")) {
 	        		String yy;
 	        		if (curArtistDir.peek().endsWith("/")) {
@@ -265,7 +267,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 	
     @SuppressLint("DefaultLocale")
 	public void myloadContent(String dirname, int position) {    
-    	String code = NAction.getCode(getApplicationContext());
+    	//String code = NAction.getCode(getApplicationContext());
     	if (request == REQUEST_RECENT) {
 	    	adapter.clear();
 	    	adapter.add(new TextItem(getString(R.string.info_recent)));
@@ -615,6 +617,19 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     public void onUp(View v) {
     	onTop();
     }
+	@Override
+	public boolean onKeyUp(int keyCoder, KeyEvent event) {
+		if (keyCoder == KeyEvent.KEYCODE_BACK) {
+			if (curArtistDir.size() > _GLOBAL_DEPTH) {
+				onTop();
+				return true;
+			} else {
+				finish();
+			}
+		}
+		return super.onKeyDown(keyCoder, event);
+
+	}
     /*
     public void cloneRepository() throws IOException, InvalidRemoteException, TransportException, GitAPIException{
     	final Context context = this;

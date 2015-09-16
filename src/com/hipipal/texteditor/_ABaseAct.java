@@ -40,7 +40,7 @@ public class _ABaseAct extends GDBase {
 
 				addActionBarItem(getGDActionBar()
 			        		.newActionBarItem(NormalActionBarItem.class)
-			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
+			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_folder_open_white)), 20);
 
 			    /*addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
@@ -49,16 +49,16 @@ public class _ABaseAct extends GDBase {
 				
 			    addActionBarItem(getGDActionBar()
 			        		.newActionBarItem(NormalActionBarItem.class)
-			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_new_a)), 30);
+			        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_note_add_white)), 30);
 
 			    addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
-		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_more_vert_white)), 40);
 
 			} else {
 			    addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
-		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_more_vert_white)), 40);
 
 			}
 		    
@@ -73,7 +73,7 @@ public class _ABaseAct extends GDBase {
 			}
 		    addActionBarItem(getGDActionBar()
 	        		.newActionBarItem(NormalActionBarItem.class)
-	        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_action_overflow)), 40);
+	        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_more_vert_white)), 40);
 		} else {
 			
 			
