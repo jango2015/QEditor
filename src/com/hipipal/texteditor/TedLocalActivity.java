@@ -327,8 +327,8 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 								
 								//String ext = FileHelper.getExt(filename.toLowerCase(), "");
 								String lname = filename.toLowerCase();
-								boolean dis = false;
-								if (code.startsWith("qpy")) {
+								boolean dis = true;
+								/*if (code.startsWith("qpy")) {
 									if (lname.endsWith(".py") || lname.endsWith(".kv")) {
 										dis = true;
 									}
@@ -339,7 +339,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 									}
 								} else {
 									dis = true;
-								}
+								}*/
 								
 								if (dis) {
 									int icon;

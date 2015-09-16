@@ -88,7 +88,7 @@
     <string name="cannot_save">Can not save</string>
     <string name="cannot_empty">File content must not be empty</string>
 
-    <string name="confirm_save">Confirm to cover</string>
+    <string name="confirm_save">Confirm to overwrite</string>
     <string name="info_new">New</string>
     <string name="dir_new">New directory</string>
     <string name="dir_exists">The directory exists</string>

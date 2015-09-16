@@ -5,11 +5,9 @@ import static fr.xgouchet.androidlib.data.FileUtils.getCanonizePath;
 import static fr.xgouchet.androidlib.data.FileUtils.renameItem;
 import static fr.xgouchet.androidlib.ui.Toaster.showToast;
 import greendroid.widget.ActionBarItem;
-import greendroid.widget.QuickActionBar;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 
-import jackpal.androidterm.util.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -116,6 +114,8 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
             ImageButton homeBtn = (ImageButton)findViewById(R.id.gd_action_bar_home_item);
             homeBtn.setImageResource(R.drawable.ic_menu_white);
             
+    		initDrawerMenu(this);
+
 			checkUpdate(CONF.BASE_PATH);
 			
         }
@@ -171,7 +171,6 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		if (!(folder.exists() && folder.isDirectory())) {
 			folder.mkdir();
 		}
-		initDrawerMenu(this);
 
 		File f = new File(path + "/Apache_License");
 		if (!f.exists()) {
@@ -534,7 +533,12 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
     @Override
     public int createLayout() {
-        return R.layout.gd_content_drawer;
+        if (NAction.getCode(getApplicationContext()).equals("texteditor")) {    
+
+        	return R.layout.gd_content_drawer;
+        } else {
+        	return R.layout.gd_content_normal;
+        }
     }
     
     private static String getFileName(String path)
@@ -544,7 +548,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
     private void initDrawerMenu(Context context) {
     	LinearLayout gd_drawer_layout_left= (LinearLayout)findViewById(R.id.gd_drawer_layout_left);
-    	View drawerDownMenu=LayoutInflater.from(context).inflate(R.layout.drawer_menu, null);
+    	View drawerDownMenu=LayoutInflater.from(context).inflate(R.layout.qedit_drawer_menu, null);
     	gd_drawer_layout_left.addView(drawerDownMenu);
 
     	LinearLayout itemView1 = (LinearLayout)findViewById(R.id.menu_input_item1);
@@ -1233,7 +1237,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 
 		try {
 			text = TextFileUtils.readTextFile(file);
-			Log.d(TAG, "Settext:"+text.length());
+			//Log.d(TAG, "Settext:"+text.length());
 
 			if (text != null) {
 				mInUndo = true;
@@ -1267,7 +1271,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 				}
 
 				updateTitle();
-				initDrawerMenu(this);
+				//initDrawerMenu(this);
 				
 				NStorage.setSP(getApplicationContext(), "qedit.last_filename", mCurrentFilePath);
 				return true;
@@ -1380,7 +1384,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		//Crouton.showText(this, R.string.toast_save_success, Style.CONFIRM);
 		if (show) {
 			Toast.makeText(getApplicationContext(), R.string.toast_save_success, Toast.LENGTH_SHORT).show();
-			initDrawerMenu(this);
+			//initDrawerMenu(this);
 			}
 
 		runAfterSave();
@@ -2375,7 +2379,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		if ((mCurrentFileName != null) && (mCurrentFileName.length() > 0))
 			name = mCurrentFileName;
 
-		Log.d(TAG, "updateTitle:"+mCurrentFileName);
+		//Log.d(TAG, "updateTitle:"+mCurrentFileName);
 
 		if (mReadOnly)
 			title = getString(R.string.title_editor_readonly, name);
