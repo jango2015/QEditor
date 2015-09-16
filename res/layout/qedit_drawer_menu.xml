@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bootstrap="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/menu_layout_top"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+    android:background="@color/topbar" >
+
+        <TextView
+            android:id="@+id/menu_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu_head_img"
+            android:layout_margin="15dp"
+            android:text="@string/menu_open_recent"
+            android:textSize="18sp"
+            android:paddingBottom="15dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/down_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/menu_layout_top"
+        android:clickable="true"
+        android:paddingLeft="10dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+        
+        <LinearLayout 
+       	    android:paddingTop="3dp"
+      	    android:layout_marginBottom="3dp"
+            android:id="@+id/menu_input_item1"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/menu_input_name1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="18sp"
+             />
+
+        <TextView
+            android:id="@+id/menu_input_path1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="12sp"
+             />
+            <View android:layout_height="1px" 
+                android:layout_marginTop="3px"
+                android:background="#555555" 
+                android:layout_width="fill_parent">
+            </View>
+        </LinearLayout>
+        
+        <LinearLayout 
+       	    android:paddingTop="3dp"
+      	    android:layout_marginBottom="3dp"
+        	android:id="@+id/menu_input_item2"
+       		android:layout_width="match_parent"
+            android:visibility="gone"
+       		android:layout_height="wrap_content"
+        	android:orientation="vertical" >
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/menu_input_name2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="18sp"
+             />
+
+        <TextView
+            android:id="@+id/menu_input_path2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="12sp"
+        	
+             />
+            <View android:layout_height="1px" 
+                android:layout_marginTop="3px"
+                android:background="#555555" 
+                android:layout_width="fill_parent">
+            </View>
+        </LinearLayout>
+        
+        <LinearLayout 
+       	    android:paddingTop="3dp"
+      	    android:layout_marginBottom="3dp"
+        	android:id="@+id/menu_input_item3"
+        	android:layout_width="fill_parent"
+            android:visibility="gone"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical" >
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/menu_input_name3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="18sp"
+             />
+
+        <TextView
+            android:id="@+id/menu_input_path3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="12sp"
+        	
+             />
+            <View android:layout_height="1px" 
+                android:layout_marginTop="3px"
+                android:background="#555555" 
+                android:layout_width="fill_parent">
+            </View>
+        </LinearLayout>
+        
+        <LinearLayout 
+       	    android:paddingTop="3dp"
+      	    android:layout_marginBottom="3dp"
+        	android:id="@+id/menu_input_item4"
+        	android:layout_width="fill_parent"
+            android:visibility="gone"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical" >
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/menu_input_name4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/menu_input_path4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="12sp"
+        	
+             />
+            <View android:layout_height="1px" 
+                android:layout_marginTop="3px"
+                android:background="#555555" 
+                android:layout_width="fill_parent">
+            </View>
+        </LinearLayout>
+        
+        <LinearLayout 
+       	    android:paddingTop="3dp"
+      	    android:layout_marginBottom="3dp"
+        	android:id="@+id/menu_input_item5"
+        	android:layout_width="fill_parent"
+            android:visibility="gone"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical" >
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/menu_input_name5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="18sp"
+             />
+
+        <TextView
+            android:id="@+id/menu_input_path5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="12sp"
+        	
+             />
+            <View android:layout_height="1px" 
+                android:layout_marginTop="3px"
+                android:background="#555555" 
+                android:layout_width="fill_parent">
+            </View>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

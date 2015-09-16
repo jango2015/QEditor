@@ -7,8 +7,6 @@ import static fr.xgouchet.androidlib.ui.Toaster.showToast;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1070,29 +1068,24 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 		}
 	}
 
+
 	/**
 	 * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
 	 */
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_BACK:
-				if (mSearchLayout.getVisibility() != View.GONE)
-					search();
-				else if (Settings.UNDO && Settings.BACK_BTN_AS_UNDO) {
-					
-					if (!undo())
-						warnOrQuit();
-				} 
-			return true;
-		case KeyEvent.KEYCODE_SEARCH:
-			search();
-			mWarnedShouldQuit = false;
-			return true;
-		}
-		mWarnedShouldQuit = false;
-		return super.onKeyUp(keyCode, event);
-	}
+	
+	
+//	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		//TODO	
+////		switch (keyCode) {
+////		case KeyEvent.KEYCODE_F5:
+////			Toast.makeText(this,"f5 f5 f5", Toast.LENGTH_SHORT).show();
+////			runScript();
+////		return true;
+////		
+////		}
+////		mWarnedShouldQuit = false;
+//		return super.onKeyUp(keyCode, event);
+//	}
 
 	/**
 	 * @see OnClickListener#onClick(View)
@@ -1838,8 +1831,13 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 			SnippetsList(false);
 		}
 	}
+	//TODO
+	
+	
+	
+	@SuppressLint("NewApi")
 	@Override
-	public boolean onKeyDown(int keyCoder,KeyEvent event){
+	public boolean onKeyUp(int keyCoder,KeyEvent event){
 		String code =NAction.getCode(this);
     	if (keyCoder == KeyEvent.KEYCODE_BACK) {
 			if (IS_DOC_BACK) {
@@ -1893,8 +1891,71 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 					}
 				}
 			}
+    	}else if(event.isCtrlPressed()){
+			switch (keyCoder) {
+			case KeyEvent.KEYCODE_F: 
+				setSearch();
+				break;
+			case KeyEvent.KEYCODE_S:
+				saveContent();
+				break;
+			case KeyEvent.KEYCODE_O:
+				openFile();
+				break;
+			case KeyEvent.KEYCODE_Z:
+				undo();
+				break;
+			case KeyEvent.KEYCODE_L:
+				goToLine();
+				break;
+			case KeyEvent.KEYCODE_LEFT_BRACKET:
+				leftIndent();
+				break;
+			case KeyEvent.KEYCODE_RIGHT_BRACKET:
+				rightIndent();
+				break;
+			case KeyEvent.KEYCODE_R:
+				runScript();
+				break;				
+			default:
+				break;
+			}
+		}else{
+    		switch(keyCoder){
+    		//F5 ,run the code
+    		case KeyEvent.KEYCODE_F5:
+    			Toast.makeText(this,"f5 f5 f5", Toast.LENGTH_SHORT).show();
+    			runScript();
+    			break;
+    		//tab ,input 4 space
+    		case KeyEvent.KEYCODE_TAB:
+    			rightIndent();
+    			//mEditor.setSelection(mEditor.getText().length());
+    			//mEditor.setText(mEditor.getText());
+    			mEditor.setFocusable(true);
+    			mEditor.setFocusableInTouchMode(true);
+    			mEditor.requestFocus();
+    			mEditor.requestFocusFromTouch();
+    			mEditor.findFocus();
+    			//Toast.makeText(this,"tab tab tab", Toast.LENGTH_SHORT).show();
+    			break;
+    		case KeyEvent.KEYCODE_BACK:
+    				if (mSearchLayout.getVisibility() != View.GONE)
+    					search();
+    				else if (Settings.UNDO && Settings.BACK_BTN_AS_UNDO) {
+    					
+    					if (!undo())
+    						warnOrQuit();
+    				} 
+    			break;
+    		case KeyEvent.KEYCODE_SEARCH:
+    			search();
+    			mWarnedShouldQuit = false;
+    			break;
+    		}
+    		mWarnedShouldQuit = false;
     	} 
-
+    
 		return super.onKeyDown(keyCoder, event);
 	}
 	
@@ -2473,49 +2534,23 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher,
 	 * @author kyle kersey
 	 * http://developer.android.com/reference/android/view/KeyEvent.html
 	 */
-	@SuppressLint("NewApi")
-	@Override
-	public boolean onKeyShortcut(int keyCode, KeyEvent event){
-		if(event.isCtrlPressed()){
-			switch (keyCode) {
-			case KeyEvent.KEYCODE_F: 
-				setSearch();
-				break;
-			case KeyEvent.KEYCODE_S:
-				saveContent();
-				break;
-			case KeyEvent.KEYCODE_O:
-				openFile();
-				break;
-			case KeyEvent.KEYCODE_Z:
-				undo();
-				break;
-			case KeyEvent.KEYCODE_L:
-				goToLine();
-				break;
-			case KeyEvent.KEYCODE_LEFT_BRACKET:
-				leftIndent();
-				break;
-			case KeyEvent.KEYCODE_RIGHT_BRACKET:
-				rightIndent();
-				break;
-			case KeyEvent.KEYCODE_R:
-				runScript();
-				break;				
-			default:
-				break;
-			}
-		}
-		 Log.d(TAG, "TAG INFORMATION keycode:"+keyCode); 
-		switch (keyCode) {
-        case KeyEvent.KEYCODE_TAB:
-        	rightIndent();
-            break;
-        default:
-        	  break;
-    }
-		return false;
-	}
+	//@SuppressLint("NewApi")
+
+//	public boolean onKeyShortcut(int keyCode, KeyEvent event){
+//		
+//		
+//		 Log.d(TAG, "TAG INFORMATION keycode:"+keyCode); 
+//		//TODO
+//
+//		 /*switch (keyCode) {
+//				case KeyEvent.KEYCODE_TAB:
+//				rightIndent();
+//	            	break;
+//				default:
+//					break;
+//	    } */
+//		return false;
+//	}
 	
 	/** the text editor */
 	protected AdvancedEditText mEditor;
