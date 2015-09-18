@@ -1801,9 +1801,15 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 
 	// TODO
 
-	@SuppressLint("NewApi")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public boolean onKeyUp(int keyCoder, KeyEvent event) {
+		boolean isCtr = false;
+		try {
+			isCtr = event.isCtrlPressed();
+		} catch (NoSuchMethodError e) {
+			
+		}
 		String code = NAction.getCode(this);
 		if (keyCoder == KeyEvent.KEYCODE_BACK) {
 			if (IS_DOC_BACK) {
@@ -1868,7 +1874,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 				}
 			}
 		}
-		else if (event.isCtrlPressed()) {
+		else if (isCtr) {
 			switch (keyCoder) {
 			case KeyEvent.KEYCODE_F:
 				setSearch();
