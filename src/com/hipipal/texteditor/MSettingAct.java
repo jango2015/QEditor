@@ -1,11 +1,19 @@
 package com.hipipal.texteditor;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.zuowuxuxi.base.MyApp;
 import com.zuowuxuxi.base._WBase;
 import com.zuowuxuxi.util.NAction;
 import com.zuowuxuxi.util.NUtil;
+import com.zuowuxuxi.view.AdSlidShowView;
+import com.zuowuxuxi.view.AdSlidShowView.urlBackcall;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MSettingAct extends _ABaseAct {
-	private static final String TAG = "MSettingAct";
+	private static final String TAG = "setting";
     private static final int SCRIPT_EXEC_CODE = 1235;  
 
     @Override
@@ -103,11 +111,64 @@ public class MSettingAct extends _ABaseAct {
         
         displayDefaultRoot();
         displayProxy();
+        showRecommandAd();
         
         MNApp mnApp = (MNApp) this.getApplication();
         mnApp.trackPageView("/"+NAction.getCode(getApplicationContext())+"/msetting");
 
         MyApp.getInstance().addActivity(this); 
+    }
+ 
+    public void showRecommandAd() {
+        if (!NAction.checkIfPayIAP(getApplicationContext(), "ad")) {
+
+		if (NAction.getExtP(getApplicationContext(), "adx_" + TAG)
+				.equals("1")) {
+
+		String ad = NAction.getExtAdConf(getApplicationContext());
+
+		final List<String> ltImgLink=new ArrayList<String>();
+		List<String> ltResImg=new ArrayList<String>();
+			try {
+				JSONObject jsonObj = new JSONObject(ad);
+				
+				JSONArray arrAd = jsonObj.getJSONArray("marquee");
+				for(int i=0;i<arrAd.length();i++){
+					JSONObject json=arrAd.getJSONObject(i);
+					String ad_code=json.getString("ad_code");
+					if(!NUtil.checkAppInstalledByName(getApplicationContext(), ad_code)){
+						Log.d(TAG, "ad_code:"+ad_code);
+						String link = confGetUpdateURL(3)+"&linkid="+json.getString("adLink_id");
+
+						ltResImg.add(json.getString("ad_img"));
+						ltImgLink.add(link);
+					} else {
+						Log.d(TAG, "!ad_code:"+ad_code);
+
+					}
+					
+				}
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+
+		    AdSlidShowView adSlid = (AdSlidShowView)findViewById(R.id.adSlid2);
+			adSlid.setImagesFromUrl(ltResImg);
+			adSlid.setOnUrlBackCall(new urlBackcall() {
+				@Override
+				public void onUrlBackCall(int i) {
+					Intent intent = NAction.openRemoteLink(
+							getApplicationContext(), ltImgLink.get(i));
+					startActivity(intent);
+				}
+			});
+			adSlid.setVisibility(View.VISIBLE);
+			findViewById(R.id.adLine).setVisibility(View.VISIBLE);
+			findViewById(R.id.adTitle).setVisibility(View.VISIBLE);
+		}
+        }
     }
     
     public void onNoAD(View v) {

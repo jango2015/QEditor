@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">QEdit Free</string>
+    <string name="app_label">QEditFree</string>
+
     <string name="app_name_full">QEdit (Text Editor)</string>
 
     <!--  -->
@@ -102,7 +104,6 @@
 	<string name="play_from_website">Videos website</string>
 	<string name="pls_install_a8_play">Please install A8 Video Player first</string>
 	<string name="download_as">Download and save as</string>
-	<string name="err_not_input">Please input the keyword to search</string>    
 	<string name="info_browser">QBrowser</string>    
 	<string name="pls_open_file">No file yet</string>
 
@@ -139,5 +140,6 @@
 	<string name="script_has_been_created">Script has been created, you are editing the {0}</string>
 	<string name="script_name_should_be_py_ext">Script file name should be end-with ".py"</string>
 
+ 	<string name="qedit_loading">QEdit is launching ...</string>
 
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QEdit gratuit</string>
+    <string name="app_label">QEdit gratuit</string>
     <string name="app_name_full">QEdit (Éditeur de texte)</string>
     <!--  -->
     <string name="permission_internal">Permission QEdit interne</string>
@@ -90,7 +91,6 @@
 	<string name="play_from_website">vidéos site</string>
 	<string name="pls_install_a8_play">S\'il vous plaît installer A8 Video Player premier</string>
 	<string name="download_as">Télécharger et enregistrer en tant que</string>
-	<string name="err_not_input">Saisissez le mot-clé de recherche</string>
 	<string name="info_browser">QBrowser</string>    
 	<string name="pls_open_file">Aucun fichier </string>
 	<string name="support_intro">Il n\'est pas Python / fichier HTML</string>

@@ -31,20 +31,19 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
 	android:visibility="gone">
-    	<LinearLayout 
+	
+    <LinearLayout 
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:background="@color/cgrey6"
-		>
-	<RelativeLayout 
-		android:id="@+id/locallist"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:clickable="false"	
-		android:padding="5.0dip">
-
-	   <include android:id="@+id/save_div" layout="@layout/v_save_bar" />     
-	</RelativeLayout>
+		android:background="@color/cgrey6">
+		<RelativeLayout 
+			android:id="@+id/locallist"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:clickable="false"	
+			android:padding="5.0dip">
+	    	<include android:id="@+id/save_div" layout="@layout/v_save_bar" />     
+		</RelativeLayout>
 	</LinearLayout>
 
 </LinearLayout>

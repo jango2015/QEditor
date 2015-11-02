@@ -5,8 +5,13 @@ import static fr.xgouchet.androidlib.data.FileUtils.getCanonizePath;
 import static fr.xgouchet.androidlib.data.FileUtils.renameItem;
 import static fr.xgouchet.androidlib.ui.Toaster.showToast;
 import greendroid.widget.ActionBarItem;
+import greendroid.widget.ItemAdapter;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
+import greendroid.widget.item.DrawableItem;
+import greendroid.widget.item.LongTextItem;
+import greendroid.widget.item.TextItem;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,6 +35,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION;
@@ -53,11 +60,13 @@ import android.view.ViewGroup;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.hipipal.texteditor.common.Constants;
 import com.hipipal.texteditor.common.RecentFiles;
@@ -68,12 +77,11 @@ import com.hipipal.texteditor.ui.view.AdvancedEditText;
 import com.hipipal.texteditor.undo.TextChangeWatcher;
 import com.zuowuxuxi.base.MyApp;
 import com.zuowuxuxi.base._WBase;
-import com.zuowuxuxi.util.FileHelper;
 import com.zuowuxuxi.util.NAction;
 import com.zuowuxuxi.util.NStorage;
 
-import de.neofonie.mobile.app.android.widget.crouton.Crouton;
-import de.neofonie.mobile.app.android.widget.crouton.Style;
+//import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+//import de.neofonie.mobile.app.android.widget.crouton.Style;
 //import android.content.res.Configuration;
 //import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 
@@ -100,7 +108,6 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -132,13 +139,13 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 
 		// editor
 		mEditor = (AdvancedEditText) findViewById(R.id.editor);
-		try {
+		/*try {
 			if (AndroidCompat.SDK >= Build.VERSION_CODES.HONEYCOMB)
 				mEditor.setCustomSelectionActionModeCallback(new ActionBarCallBack());
 		}
 		catch (Exception e) {
 
-		}
+		}*/
 		// log output
 		// mLogField = (AdvancedEditText) findViewById(R.id.output_log);
 		// mLogField.setVisibility(View.GONE);
@@ -209,7 +216,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 		if (!lastFile.equals("")) {
 			File f2 = new File(lastFile);
 			if (f2.exists()) {
-				Log.d(TAG, "OPEN LAST:" + lastFile);
+				//Log.d(TAG, "OPEN LAST:" + lastFile);
 
 				doOpenFile(f2, false);
 			}
@@ -446,7 +453,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 	 * @author kyle kersey
 	 * 
 	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	/*
 	class ActionBarCallBack implements ActionMode.Callback {
 
 		@Override
@@ -460,11 +467,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 			return false;
 		}
 
-		/**
-		 * Create a share Intent for the text
-		 */
 
-		@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Change the button image
@@ -494,15 +497,13 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 			return false;
 		}
 	}
-
+*/
 	public void shareData() {
 		EditText et = (EditText) findViewById(R.id.editor);
 		int startSelection = et.getSelectionStart();
 		int endSelection = et.getSelectionEnd();
 		String selectedText = et.getText().toString().substring(startSelection, endSelection);
-		/**
-		 * Detect if the text is selected This needs improvement
-		 */
+
 		if (selectedText.length() != 0) {
 			Intent sendIntent = new Intent();
 			sendIntent.setAction(Intent.ACTION_SEND);
@@ -520,9 +521,6 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 		}
 	}
 
-	/**
-	 * Set the search using the selected text
-	 */
 	public void setSearch() {
 		search();
 
@@ -550,125 +548,72 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 	}
 
 	private void initDrawerMenu(Context context) {
-		LinearLayout gd_drawer_layout_left = (LinearLayout) findViewById(R.id.gd_drawer_layout_left);
-		View drawerDownMenu = LayoutInflater.from(context).inflate(R.layout.qedit_drawer_menu, null);
-		gd_drawer_layout_left.addView(drawerDownMenu);
+		findViewById(R.id.handle_save).setVisibility(View.GONE);
+		findViewById(R.id.handle_history).setVisibility(View.GONE);
+		
+	   	LinearLayout drawerPanent=(LinearLayout) findViewById(R.id.gd_drawer_layout_left);
+		drawerPanent.removeAllViews();
 
-		LinearLayout itemView1 = (LinearLayout) findViewById(R.id.menu_input_item1);
-		LinearLayout itemView2 = (LinearLayout) findViewById(R.id.menu_input_item2);
-		LinearLayout itemView3 = (LinearLayout) findViewById(R.id.menu_input_item3);
-		LinearLayout itemView4 = (LinearLayout) findViewById(R.id.menu_input_item4);
-		LinearLayout itemView5 = (LinearLayout) findViewById(R.id.menu_input_item5);
+	   	View view=LayoutInflater.from(context).inflate(R.layout.qedit_drawer_menu, null);
+	   	ListView menuList = (ListView) view.findViewById(R.id.drawer_menu_list);
+	   	ItemAdapter adapter = new ItemAdapter(this);
+	   	menuList.setDivider(new ColorDrawable(getResources().getColor(R.color.cgrey6)));
+	   	menuList.setDividerHeight(1);
+	   	menuList.setCacheColorHint(0);
+	   	menuList.setAdapter(adapter);
+	   	menuList.setBackgroundColor(Color.WHITE);
+	   	
+	   	menuList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> l, View view, int position, long id) {
+				final TextItem textItem = (TextItem) l.getAdapter().getItem(position);
+		    	final String act = (String)textItem.getTag(0);
+		    	if (act.equals("open")) {
+		    		 openFile();
+		    	} else if (act.equals("new")) {
+		    		newProject();
+		    	} else if (act.equals("recent")) {
+					openRecentFile();
 
-		TextView textView1 = (TextView) findViewById(R.id.menu_input_name1);
-		TextView textView2 = (TextView) findViewById(R.id.menu_input_name2);
-		TextView textView3 = (TextView) findViewById(R.id.menu_input_name3);
-		TextView textView4 = (TextView) findViewById(R.id.menu_input_name4);
-		TextView textView5 = (TextView) findViewById(R.id.menu_input_name5);
-
-		TextView pathView1 = (TextView) findViewById(R.id.menu_input_path1);
-		TextView pathView2 = (TextView) findViewById(R.id.menu_input_path2);
-		TextView pathView3 = (TextView) findViewById(R.id.menu_input_path3);
-		TextView pathView4 = (TextView) findViewById(R.id.menu_input_path4);
-		TextView pathView5 = (TextView) findViewById(R.id.menu_input_path5);
-
-		final ArrayList<String> mList = RecentFiles.getRecentFiles();
-		int size = mList.size();
-		if (size > 0) {
-			textView1.setText(getFileName(mList.get(0)));
-			pathView1.setText(mList.get(0));
-			itemView1.setVisibility(View.VISIBLE);
-			size--;
-		}
-		if (size > 0) {
-			textView2.setText(getFileName(mList.get(1)));
-			pathView2.setText(mList.get(0));
-			itemView2.setVisibility(View.VISIBLE);
-			size--;
-		}
-		if (size > 0) {
-			textView3.setText(getFileName(mList.get(2)));
-			pathView3.setText(mList.get(0));
-			itemView3.setVisibility(View.VISIBLE);
-			size--;
-		}
-		if (size > 0) {
-			textView4.setText(getFileName(mList.get(3)));
-			pathView4.setText(mList.get(0));
-			itemView4.setVisibility(View.VISIBLE);
-			size--;
-		}
-		if (size > 0) {
-			textView5.setText(getFileName(mList.get(4)));
-			pathView5.setText(mList.get(0));
-			itemView5.setVisibility(View.VISIBLE);
-			size--;
-		}
-
-		itemView1.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mAfterSave = new Runnable() {
+		    	}
+		    	/*mAfterSave = new Runnable() {
 					@Override
 					public void run() {
-						doOpenFile(new File(mList.get(0)), false);
+						doOpenFile(new File(fileName), false);
 					}
 				};
 				closeDrawer();
-				promptSaveDirty();
+				promptSaveDirty();*/
+		    	closeDrawer();
 			}
-		});
+        });  
 
-		itemView2.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mAfterSave = new Runnable() {
-					@Override
-					public void run() {
-						doOpenFile(new File(mList.get(1)), false);
-					}
-				};
-				closeDrawer();
-				promptSaveDirty();
-			}
-		});
+	    adapter.clear();
+	    DrawableItem sItem1 = new DrawableItem(getString(R.string.menu_open), R.drawable.ic_create_black);
+	    sItem1.setTag(0, "open");
+	    DrawableItem sItem2 = new DrawableItem(getString(R.string.menu_new), R.drawable.ic_add_black);
+	    sItem2.setTag(0, "new");
+	    DrawableItem sItem3 = new DrawableItem(getString(R.string.menu_open_recent), R.drawable.ic_sort_black);
+	    sItem3.setTag(0, "recent");
+		adapter.add(sItem1);
+		adapter.add(sItem2);
+		adapter.add(sItem3);
 
-		itemView3.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mAfterSave = new Runnable() {
-					@Override
-					public void run() {
-						doOpenFile(new File(mList.get(2)), false);
-					}
-				};
-				closeDrawer();
-				promptSaveDirty();
-			}
-		});
-
-		itemView4.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mAfterSave = new Runnable() {
-					@Override
-					public void run() {
-						doOpenFile(new File(mList.get(3)), false);
-					}
-				};
-				closeDrawer();
-				promptSaveDirty();
-			}
-		});
-
-		itemView5.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mAfterSave = new Runnable() {
-					@Override
-					public void run() {
-						doOpenFile(new File(mList.get(4)), false);
-					}
-				};
-				closeDrawer();
-				promptSaveDirty();
-			}
-		});
+//		final ArrayList<String> mList = RecentFiles.getRecentFiles();
+//		if (mList!=null) {
+//			Log.d(TAG, "mList sizes:"+mList.size());
+//
+//			for (int i=0;i<mList.size();i++) {
+//				String _x = mList.get(i);
+//				
+//				LongTextItem sItem = new LongTextItem(_x);
+//				sItem.setTag(0, _x);
+//				adapter.add(sItem);
+//			}
+//
+//		}
+		adapter.notifyDataSetChanged();
+   	 	drawerPanent.addView(view);
 	}
 
 	/**
@@ -809,7 +754,6 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 	 * 
 	 */
 	@Override
-	@TargetApi(11)
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Bundle extras;
 		if (CONF.DEBUG)
@@ -1068,10 +1012,14 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 				doOpenFile(file, false);
 			}
 			catch (URISyntaxException e) {
-				Crouton.showText(this, R.string.toast_intent_invalid_uri, Style.ALERT);
+				Toast.makeText(getApplicationContext(), R.string.toast_intent_invalid_uri, Toast.LENGTH_SHORT).show();
+
+				//Crouton.showText(this, R.string.toast_intent_invalid_uri, Style.ALERT);
 			}
 			catch (IllegalArgumentException e) {
-				Crouton.showText(this, R.string.toast_intent_illegal, Style.ALERT);
+				Toast.makeText(getApplicationContext(), R.string.toast_intent_illegal, Toast.LENGTH_SHORT).show();
+
+				//Crouton.showText(this, R.string.toast_intent_illegal, Style.ALERT);
 			}
 		}
 		else if (action.equals(ACTION_WIDGET_OPEN)) {
@@ -1080,10 +1028,14 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 				doOpenFile(file, intent.getBooleanExtra(EXTRA_FORCE_READ_ONLY, false));
 			}
 			catch (URISyntaxException e) {
-				Crouton.showText(this, R.string.toast_intent_invalid_uri, Style.ALERT);
+				Toast.makeText(getApplicationContext(), R.string.toast_intent_invalid_uri, Toast.LENGTH_SHORT).show();
+
+				//Crouton.showText(this, R.string.toast_intent_invalid_uri, Style.ALERT);
 			}
 			catch (IllegalArgumentException e) {
-				Crouton.showText(this, R.string.toast_intent_illegal, Style.ALERT);
+				Toast.makeText(getApplicationContext(), R.string.toast_intent_illegal, Toast.LENGTH_SHORT).show();
+
+				//Crouton.showText(this, R.string.toast_intent_illegal, Style.ALERT);
 			}
 		}
 		else {
@@ -1105,10 +1057,14 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 		if ((!loaded) && Settings.USE_HOME_PAGE) {
 			file = new File(Settings.HOME_PAGE_PATH);
 			if ((file == null) || (!file.exists())) {
-				Crouton.showText(this, R.string.toast_open_home_page_error, Style.ALERT);
+				Toast.makeText(getApplicationContext(), R.string.toast_open_home_page_error, Toast.LENGTH_SHORT).show();
+
+				//Crouton.showText(this, R.string.toast_open_home_page_error, Style.ALERT);
 			}
 			else if (!file.canRead()) {
-				Crouton.showText(this, R.string.toast_home_page_cant_read, Style.ALERT);
+				Toast.makeText(getApplicationContext(), R.string.toast_home_page_cant_read, Toast.LENGTH_SHORT).show();
+
+				//Crouton.showText(this, R.string.toast_home_page_cant_read, Style.ALERT);
 			}
 			else {
 				loaded = doOpenFile(file, false);
@@ -1251,7 +1207,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 			}
 		}
 		catch (OutOfMemoryError e) {
-			Crouton.showText(this, R.string.toast_memory_open, Style.ALERT);
+			Toast.makeText(getApplicationContext(), R.string.toast_memory_open, Toast.LENGTH_SHORT).show();
+
+			//Crouton.showText(this, R.string.toast_memory_open, Style.ALERT);
 		}
 
 		return true;
@@ -1266,7 +1224,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 		String content;
 
 		if (path == null) {
-			Crouton.showText(this, R.string.toast_save_null, Style.ALERT);
+			Toast.makeText(getApplicationContext(), R.string.toast_save_null, Toast.LENGTH_SHORT).show();
+
+			//Crouton.showText(this, R.string.toast_save_null, Style.ALERT);
 			return;
 		}
 
@@ -1430,7 +1390,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 
 			// NStorage.setSP(getApplicationContext(), "qedit.last_filename", "");
 
-			WBase.setTxtDialogParam(R.drawable.ic_new_b, R.string.file_new, "Script file name",
+			WBase.setTxtDialogParam(R.drawable.ic_new_b, R.string.file_new, "", "", "Script file name",
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -1508,7 +1468,7 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 
 			// final TextView media = (TextView)findViewById(R.id.plugin_mediacenter_value);
 			// String mediaVal = media.getText().toString();
-			WBase.setTxtDialogParam(R.drawable.ic_new_b, R.string.project_new, "Project Name",
+			WBase.setTxtDialogParam(R.drawable.ic_new_b, R.string.project_new, "", "", "Project Name",
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -1636,7 +1596,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 					startActivityForResult(open, REQUEST_OPEN);
 				}
 				catch (ActivityNotFoundException e) {
-					Crouton.showText(TedActivity.this, R.string.toast_activity_open, Style.ALERT);
+					Toast.makeText(getApplicationContext(), R.string.toast_activity_open, Toast.LENGTH_SHORT).show();
+
+					//Crouton.showText(TedActivity.this, R.string.toast_activity_open, Style.ALERT);
 				}
 			}
 		};
@@ -1719,7 +1681,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 			quit();
 		}
 		else {
-			Crouton.showText(this, R.string.toast_warn_no_undo_will_quit, Style.INFO);
+			Toast.makeText(getApplicationContext(), R.string.toast_warn_no_undo_will_quit, Toast.LENGTH_SHORT).show();
+
+			//Crouton.showText(this, R.string.toast_warn_no_undo_will_quit, Style.INFO);
 			mWarnedShouldQuit = true;
 		}
 	}
@@ -1760,6 +1724,10 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 		case 20:
 			openFile();
 			break;
+		case 25:
+			saveContent();
+			break;
+
 		case 30:
 			// mBarM.show(item.getItemView());
 			// SnippetsList();
@@ -1801,7 +1769,6 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 
 	// TODO
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public boolean onKeyUp(int keyCoder, KeyEvent event) {
 		boolean isCtr = false;
@@ -2047,7 +2014,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 			startActivityForResult(saveAs, REQUEST_SAVE_AS);
 		}
 		catch (ActivityNotFoundException e) {
-			Crouton.showText(this, R.string.toast_activity_save_as, Style.ALERT);
+			Toast.makeText(getApplicationContext(), R.string.toast_activity_save_as, Toast.LENGTH_SHORT).show();
+
+			//Crouton.showText(this, R.string.toast_activity_save_as, Style.ALERT);
 		}
 	}
 
@@ -2136,7 +2105,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 		selection = mEditor.getSelectionStart() - 1;
 
 		if (search.length() == 0) {
-			Crouton.showText(this, R.string.toast_search_no_input, Style.INFO);
+			Toast.makeText(getApplicationContext(), R.string.toast_search_no_input, Toast.LENGTH_SHORT).show();
+
+			//Crouton.showText(this, R.string.toast_search_no_input, Style.INFO);
 			return;
 		}
 
@@ -2322,30 +2293,32 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 
 			}
 			else {
-				if (content.startsWith("<") || mCurrentFilePath.endsWith(".md") || mCurrentFilePath.endsWith(".html")) {
-					// doAutoSaveFile(false);
-					doSaveFile(mCurrentFilePath, false);
-
-					Intent intent = new Intent(getApplicationContext(), MTubebook.class);
-					Uri data = Uri.fromFile(new File(mCurrentFilePath));
-					intent.setData(data);
-					startActivity(intent);
-				}
-				else if (mCurrentFilePath.endsWith(".sh")) {
-					// todo
-
-					String[] args = { "sh " + mCurrentFilePath + " && sh " + getFilesDir() + "/bin/end.sh && exit" };
-					execInConsole(args);
-
-					// qpy not support
-				}
-				else if (mCurrentFilePath.endsWith(".lua")) {
-
-					callLuaApi("qedit", mCurrentFilePath, content);
-
-				}
-				else {
-					callPyApi("qedit", mCurrentFilePath, content);
+				if (mCurrentFilePath!=null) {
+					if (content.startsWith("<") || mCurrentFilePath.endsWith(".md") || mCurrentFilePath.endsWith(".html")) {
+						// doAutoSaveFile(false);
+						doSaveFile(mCurrentFilePath, false);
+	
+						Intent intent = new Intent(getApplicationContext(), MTubebook.class);
+						Uri data = Uri.fromFile(new File(mCurrentFilePath));
+						intent.setData(data);
+						startActivity(intent);
+					}
+					else if (mCurrentFilePath.endsWith(".sh")) {
+						// todo
+	
+						String[] args = { "sh " + mCurrentFilePath + " && sh " + getFilesDir() + "/bin/end.sh && exit" };
+						execInConsole(args);
+	
+						// qpy not support
+					}
+					else if (mCurrentFilePath.endsWith(".lua")) {
+	
+						callLuaApi("qedit", mCurrentFilePath, content);
+	
+					}
+					else {
+						callPyApi("qedit", mCurrentFilePath, content);
+					}
 				}
 			}
 		}
@@ -2400,7 +2373,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 			startActivity(about);
 		}
 		catch (ActivityNotFoundException e) {
-			Crouton.showText(this, R.string.toast_activity_about, Style.ALERT);
+			Toast.makeText(getApplicationContext(), R.string.toast_activity_about, Toast.LENGTH_SHORT).show();
+
+			//Crouton.showText(this, R.string.toast_activity_about, Style.ALERT);
 		}
 	}
 
@@ -2418,7 +2393,9 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 					startActivity(settings);
 				}
 				catch (ActivityNotFoundException e) {
-					Crouton.showText(TedActivity.this, R.string.toast_activity_settings, Style.ALERT);
+					Toast.makeText(getApplicationContext(), R.string.toast_activity_settings, Toast.LENGTH_SHORT).show();
+
+					//Crouton.showText(TedActivity.this, R.string.toast_activity_settings, Style.ALERT);
 				}
 			}
 		};
@@ -2429,7 +2406,6 @@ public class TedActivity extends _ABaseAct implements Constants, TextWatcher, On
 	/**
 	 * Update the window title
 	 */
-	@TargetApi(11)
 	protected void updateTitle() {
 		String title;
 		String name;

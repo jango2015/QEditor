@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QEdit 免费版</string>
+    <string name="app_label">QEdit 免费版</string>
     <string name="app_name_full">QEdit（文本编辑）</string>
     <!--  -->
     <string name="permission_internal">QEdit内部权限</string>
@@ -90,7 +91,6 @@
 	<string name="play_from_website">视频网站</string>
 	<string name="pls_install_a8_play">请首先安装A8视频播放器</string>
 	<string name="download_as">下载并保存为</string>
-	<string name="err_not_input">请输入关键字进行搜索</string>    
 	<string name="info_browser">QBrowser</string>    
 	<string name="pls_open_file">没有文件</string>
 	<string name="support_intro">这不是 Python/HTML的文件</string>

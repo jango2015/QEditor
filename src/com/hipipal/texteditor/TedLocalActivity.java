@@ -15,7 +15,10 @@ import com.zuowuxuxi.util.NAction;
 import com.zuowuxuxi.util.NUtil;
 import com.zuowuxuxi.base._WBase;
 
+import greendroid.graphics.drawable.ActionBarDrawable;
+import greendroid.widget.ActionBarItem;
 import greendroid.widget.ItemAdapter;
+import greendroid.widget.NormalActionBarItem;
 import greendroid.widget.QuickActionBar;
 import greendroid.widget.QuickActionWidget;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
@@ -163,6 +166,8 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
             //new CacheAvaiDirs().execute();
 
     	}
+    	
+		initWidgetTabItem();
 
     	LinearLayout rb = (LinearLayout)findViewById(R.id.return_bar_box);
     	LinearLayout sb = (LinearLayout)findViewById(R.id.setting_box);
@@ -175,7 +180,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 			setTitle(R.string.title_open_recent);
 			break;
 		case REQUEST_OPEN:
-			rb.setVisibility(View.VISIBLE);
+			rb.setVisibility(View.GONE);
 			setTitle(R.string.title_open);
 			//Toast.makeText(this, R.string.toast_open_select, Toast.LENGTH_SHORT).show();
 			//Crouton.showText(this, R.string.toast_open_select, Style.INFO);
@@ -548,10 +553,9 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     
     @SuppressWarnings("deprecation")
 	public void doNewDir(View v) {
-    	
 		//final TextView media = (TextView)findViewById(R.id.plugin_mediacenter_value);
 		//String mediaVal = media.getText().toString();
-		WBase.setTxtDialogParam(R.drawable.ic_setting, R.string.dir_new, "sampleproject",
+		WBase.setTxtDialogParam(R.drawable.ic_new_b, R.string.dir_new, "","","Directory name",
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -564,7 +568,7 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
 				        	Toast.makeText(getApplicationContext(), R.string.dir_exists, Toast.LENGTH_SHORT).show();
 				        } else {
 				        	dirN.mkdir();
-				            myloadContent("", curPosition);
+				            myloadContent(content, curPosition);
 
 				        }
 				        //
@@ -713,4 +717,27 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     	cloneRepository();
     }
     */
+	protected void initWidgetTabItem() {
+	    addActionBarItem(getGDActionBar()
+        		.newActionBarItem(NormalActionBarItem.class)
+        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_keyboard_arrow_up_white)), 50);
+
+	    addActionBarItem(getGDActionBar()
+        		.newActionBarItem(NormalActionBarItem.class)
+        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_keyboard_arrow_right_white)), 51);
+	}
+
+	
+	@Override
+    public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+    	switch (item.getItemId()) {
+	    	case 50:
+	    		onUp(null);
+	    		break;
+	    	case 51:
+	    		onBack(null);
+	    		break;
+    	}
+    	return 	super.onHandleActionBarItemClick(item, position);
+	}
 }

@@ -6,4 +6,7 @@
     <issue id="HandlerLeak">
         <ignore path="src/com/hipipal/texteditor/MTubebook.java" />
     </issue>
+    <issue id="NewApi">
+        <ignore path="src/com/hipipal/texteditor/TedActivity.java" />
+    </issue>
 </lint>

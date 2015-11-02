@@ -558,7 +558,7 @@ IntentFilter filter = new IntentFilter(".MTubebook");
     	EditText termT = (EditText)findViewById(R.id.url_input);    	
     	String url;
     	if (termT == null || termT.getText().toString().equals("")) {
-    		Toast.makeText(getApplicationContext(), R.string.err_not_input, Toast.LENGTH_SHORT).show();
+    		Toast.makeText(getApplicationContext(), R.string.err_need_url, Toast.LENGTH_SHORT).show();
     	} else {
     		url = termT.getText().toString();
     		if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("file://") && !url.startsWith("content://") && !url.startsWith("md://")) {

@@ -18,7 +18,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.zuowuxuxi.base.MyApp;
 import com.zuowuxuxi.base._WBase;
 import com.zuowuxuxi.common.GDBase;
@@ -28,11 +32,74 @@ import com.zuowuxuxi.util.NUtil;
 public class _ABaseAct extends GDBase {
     protected static final int SCRIPT_EXEC_PY = 2235;  
     protected static final int SCRIPT_EXEC_CODE = 1235;  
+	private AdView adMob = null;
+
+    @Override
+    protected void onDestroy() {
+        LinearLayout modBanner = (LinearLayout)findViewById(R.id.modbanner);
+
+        if (adMob!=null) {
+            adMob.destroy();
+        }
+        
+        if (modBanner!=null) {
+            modBanner.removeAllViews();
+        }
+
+    	super.onDestroy();
+    	
+    }
+	public void initAD(String pageId) {
+		super.initAD(pageId);
+		
+		//Log.d(TAG, "initAD:" + pageId);
+        LinearLayout modBanner = (LinearLayout)findViewById(R.id.modbanner);
+        //Log.d(TAG, "initAD:"+modBanner.getHeight()+"-"+modBanner.getWidth());
+
+        if (NUtil.netCheckin(getApplicationContext()) && !NAction.checkIfPayIAP(getApplicationContext(), "ad")) {
+        	//tapjoyInit();
+        	//modBanner = (LinearLayout)findViewById(R.id.modbanner);
+        	//LinearLayout.LayoutParams adViewLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        	//modBanner.setLayoutParams(adViewLayoutParams);
+        	if (NAction.getCode(getApplicationContext()).endsWith("texteditor")) {
+	        	if (!NAction.getExtP(getApplicationContext(), "ad_with_"+pageId).equals("0")) {
+			        //String[] adConf = NAction.getAd(getApplicationContext());
+	                //if (adConf[0].equals("admob")) {
+	                //String ADKEY = adConf[3].equals("")?CONF.ADMOBKEY:adConf[3];
+	
+	                adMob = (AdView) findViewById(R.id.adView);
+	                adMob.setVisibility(View.VISIBLE);
+	                if (NAction.getExtP(getApplicationContext(), "ad_conf_admob_np").equals("")) { 
+	                    try {
+	                    	LinearLayout.LayoutParams adViewLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+	                    	adMob.setLayoutParams(adViewLayoutParams);
+	                    } catch (Exception e) { 
+	
+	                    }    
+	                }
+	
+	                modBanner.removeAllViews();
+	                try {
+	                    AdRequest adr = new AdRequest.Builder().build();
+	                    adMob.loadAd(adr);
+	
+	                    findViewById(R.id.modbanner_wrap).setVisibility(View.VISIBLE);
+	                } catch (NoSuchMethodError e){
+	                	
+	                }
+	
+	               // }
+	
+	        	}
+        	}
+        }    
+
+	}
 
 	public void onNotify(View v) {
 	}
 	
-	@SuppressLint("NewApi")
+	//@SuppressLint("NewApi")
 	protected void initWidgetTabItem(int flag) {
 		String code = NAction.getCode(getApplicationContext());
 		if (code.equals("qpyplus") || code.equals("qpy3") || code.startsWith("lua5")) {
@@ -66,10 +133,10 @@ public class _ABaseAct extends GDBase {
 			if (flag == 5) {
 				addActionBarItem(getGDActionBar()
 		        		.newActionBarItem(NormalActionBarItem.class)
-		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_local)), 20);
-			    addActionBarItem(getGDActionBar()
-		        		.newActionBarItem(NormalActionBarItem.class)
-		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_new_a)), 30);
+		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_save_white)), 25);
+//			    addActionBarItem(getGDActionBar()
+//		        		.newActionBarItem(NormalActionBarItem.class)
+//		        		.setDrawable(new ActionBarDrawable(this, R.drawable.ic_new_a)), 30);
 			}
 		    addActionBarItem(getGDActionBar()
 	        		.newActionBarItem(NormalActionBarItem.class)
@@ -464,11 +531,15 @@ public class _ABaseAct extends GDBase {
 	public String confGetUpdateURL(int flag) {
 		if (flag == 2) {
 			return CONF.LOG_URL+this.getPackageName()+"/"+NUtil.getVersinoCode(this);
+		} else if (flag == 3) {
+			return CONF.AD_URL+this.getPackageName()+"/"+NUtil.getVersinoCode(this)+"?"
+					+ NAction.getUserUrl(getApplicationContext());
 
 		} else {
 			return CONF.UPDATE_URL+this.getPackageName()+"/"+NUtil.getVersinoCode(this);
 
 		}
 	}
+	
 	
 }
