@@ -15,7 +15,7 @@
         android:layout_gravity="center_vertical"
         ads:adSize="SMART_BANNER"
         android:visibility="gone"
-        ads:adUnitId="ca-app-pub-5495144868493247/6395135019">
+        ads:adUnitId="ca-app-pub-6407155345832392/4726129464">
     </com.google.android.gms.ads.AdView>
     
     <LinearLayout

@@ -1,5 +1,17 @@
 package com.hipipal.texteditor;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import greendroid.graphics.drawable.ActionBarDrawable;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.NormalActionBarItem;
@@ -17,16 +29,23 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.zuowuxuxi.base.MyApp;
 import com.zuowuxuxi.base._WBase;
 import com.zuowuxuxi.common.GDBase;
+import com.zuowuxuxi.util.FileHelper;
 import com.zuowuxuxi.util.NAction;
+import com.zuowuxuxi.util.NStorage;
 import com.zuowuxuxi.util.NUtil;
 
 public class _ABaseAct extends GDBase {
@@ -61,11 +80,9 @@ public class _ABaseAct extends GDBase {
         	//modBanner = (LinearLayout)findViewById(R.id.modbanner);
         	//LinearLayout.LayoutParams adViewLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         	//modBanner.setLayoutParams(adViewLayoutParams);
-        	if (NAction.getCode(getApplicationContext()).endsWith("texteditor")) {
+        	//if (NAction.getCode(getApplicationContext()).endsWith("texteditor")) {
 	        	if (!NAction.getExtP(getApplicationContext(), "ad_with_"+pageId).equals("0")) {
-			        //String[] adConf = NAction.getAd(getApplicationContext());
-	                //if (adConf[0].equals("admob")) {
-	                //String ADKEY = adConf[3].equals("")?CONF.ADMOBKEY:adConf[3];
+
 	
 	                adMob = (AdView) findViewById(R.id.adView);
 	                adMob.setVisibility(View.VISIBLE);
@@ -90,7 +107,7 @@ public class _ABaseAct extends GDBase {
 	
 	               // }
 	
-	        	}
+	        	//}
         	}
         }    
 
@@ -189,19 +206,145 @@ public class _ABaseAct extends GDBase {
     	super.onConfigurationChanged(newConfig);
     }
     
+    public String getName() {
+        return "QPythonPlayer";
+      }
+    /**/
+    private static final int PID_INIT_VALUE = -1;
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
+    ArrayList<String> mArguments = new ArrayList<String>();
+    InputStream mIn;
+    OutputStream mOut;
+    FileDescriptor mFd;
+    
+    
+    
+    private String[] getEnvironmentArray(String pyPath) {
+
+        String path = System.getenv("PATH");
+
+        File filesDir = getFilesDir();
+        
+  	    List<String> environmentVariables = new ArrayList<String>();
+
+	    environmentVariables.add("PATH="+filesDir+"/bin"+":"+path);
+	    environmentVariables.add("LD_LIBRARY_PATH="+ ".:"+filesDir+"/lib/"+":"+filesDir+"/:"+filesDir.getParentFile()+"/lib/");
+	    environmentVariables.add("ANDROID_PRIVATE="+filesDir);
+    	File externalStorage = new File(Environment.getExternalStorageDirectory(), "com.quseit.lua5");
+
+        if (!externalStorage.exists()) {
+        	externalStorage.mkdir();
+        }
+
+	    environmentVariables.add("TMPDIR="+externalStorage+"/cache");
+	    environmentVariables.add("TEMP="+externalStorage+"/cache");
+
+        File td = new File(externalStorage+"/cache");
+        if (!td.exists()) {
+        	td.mkdir();
+        }
+        
+	    environmentVariables.add("AP_HOST="+NStorage.getSP(this, "sl4a.hostname"));
+	    environmentVariables.add("AP_PORT="+NStorage.getSP(this, "sl4a.port"));
+	    environmentVariables.add("AP_HANDSHAKE="+NStorage.getSP(this, "sl4a.secue"));
+
+	    environmentVariables.add("ANDROID_PUBLIC="+externalStorage);
+	    environmentVariables.add("ANDROID_PRIVATE="+this.getFilesDir().getAbsolutePath());
+	    environmentVariables.add("ANDROID_ARGUMENT="+pyPath);
+
+  	    for (Entry<String, String> entry : System.getenv().entrySet()) {
+  	      environmentVariables.add(entry.getKey() + "=" + entry.getValue());
+  	    }
+  	    String[] environment = environmentVariables.toArray(new String[environmentVariables.size()]);
+  	    return environment;
+    }
+    
+    public String getWorkingDirectory() {
+        return Environment.getExternalStorageDirectory()+"/com.quseit.lua5/";
+      }    
+    
+    public void playQScript(final String binaryPath, final String script, String argv1, boolean notify) {
+    	//Log.d(TAG, "playQScript:"+script);
+    	File f = new File(script);
+        
+    	
+        int[] pid = new int[1];
+
+        mArguments.add(script);
+		if (argv1!=null) {
+			mArguments.add(argv1);
+		}
+        String[] argumentsArray = mArguments.toArray(new String[mArguments.size()]);
+
+        final File mLog = new File(String.format("%s", Environment.getExternalStorageDirectory()+"/com.quseit.lua5/cache/run.log"));
+        File logDir = mLog.getParentFile();
+        if (!logDir.exists()) {
+        	FileHelper.createDirIfNExists(logDir.getAbsolutePath());
+        }
+        //mLog = new File( Environment.getExternalStorageDirectory()+"/"+getName()+".log" );
+        //Log.d("Process", "logFile:"+mLog.getAbsolutePath());
+
+        mFd = com.googlecode.android_scripting.Exec.createSubprocess(binaryPath, argumentsArray, getEnvironmentArray(f.getParentFile()+""), getWorkingDirectory(), pid);
+        //Log.d("QPY", "binaryPath:"+binaryPath+"-argumentsArray:"+argumentsArray+"-getEnvironmentArray:"+getEnvironmentArray()+"-getWorkingDirectory:"+getWorkingDirectory()+"-pid:"+pid);
+        final AtomicInteger mPid = new AtomicInteger(PID_INIT_VALUE);
+
+        mPid.set(pid[0]);
+        mOut = new FileOutputStream(mFd);
+        mIn = new StreamGobbler(new FileInputStream(mFd), mLog, DEFAULT_BUFFER_SIZE);
+        long  mStartTime = System.currentTimeMillis();
+
+ 
+        new Thread(new Runnable() {
+          public void run() {
+        	int returnValue = com.googlecode.android_scripting.Exec.waitFor(mPid.get());
+            //long mEndTime = System.currentTimeMillis();
+            int pid = mPid.getAndSet(PID_INIT_VALUE);
+            Log.d("", "out:"+mFd.out.toString());
+                        
+            Message msg = new Message();
+            msg.what = returnValue;
+            msg.obj = mArguments.get(0);
+            
+            Log.d("QPY", "Process " + pid + " exited with result code " + returnValue + ".");
+
+            try {
+                mIn.close();
+              } catch (IOException e) {
+                Log.e("QPY", e.getMessage());
+              }
+            
+            try {
+                mOut.close();
+              } catch (IOException e) {
+                  Log.e("QPY", e.getMessage());
+              }
+            
+            //context.updateNotify(msg);
+
+          }
+        }).start();
+    }
+    
+    
     @SuppressWarnings("deprecation")
-	public void callLuaApi(String flag, String param, String luaCode) {
+	public void callLuaApi(String flag, String script, String luaCode) {
 		String code = NAction.getCode(this);		
 		// todo
 		if (code.contains("lua") || (NUtil.checkAppInstalledByName(this, "com.quseit.lua5") || NUtil.checkAppInstalledByName(this, "com.quseit.lua5pro"))) {
-			String scmd = "lua";
+			
+			String scmd = getApplicationContext().getFilesDir()+"/bin/lua";
 	    	if (Build.VERSION.SDK_INT >= 20) { 
-	    		scmd = "lua-android5";
-	
-	    	} 
-	
-			String[] args = {scmd+" "+param+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
-			execInConsole(args);
+	    		scmd = getApplicationContext().getFilesDir()+"/bin/lua-android5";
+	    	}
+	    	
+        	String content = FileHelper.getFileContents(script);
+        	boolean isQapp = content.contains("-- qlua:qapp");
+        	if (isQapp) {
+        		playQScript(scmd, script, null, true);
+        	} else {
+				String[] args = {scmd+" "+script+" && sh "+getFilesDir()+"/bin/end.sh && exit"};
+				execInConsole(args);
+        	}
 		} else {
     		WBase.setTxtDialogParam(0, R.string.pls_install_lua, new DialogInterface.OnClickListener() {
 				@Override

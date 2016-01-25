@@ -126,11 +126,11 @@
 	<string name="max_lines_num_with_syntax_summary">Auto-highlight if lines less than</string>
 	<string name="qedit_not_support">QEditor only support to preview/execute the following file types\n.py, .sh, .lua, .html, .md.</string>
 	<string name="qedit_save_first">Please save the file</string>
-	<string name="private4qe_version">100.00</string>
-
+	<string name="private4qe_version">110.00</string>
+	<string name="public4qe_version">110.00</string>
+	
 	<string name="pls_install_lua">Please install the QLua to run lua script</string>
 	<string name="pls_install_qpy">Please install the QPython to run python script</string>
-	<string name="info_snippets">Snippets</string>
 	<string name="info_project_type">New ...</string>
 	<string name="file_new">New script</string>
 	<string name="script_name_cannot_empty">Script name could not be empty</string>

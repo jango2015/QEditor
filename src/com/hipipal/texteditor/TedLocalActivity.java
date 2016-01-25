@@ -123,6 +123,9 @@ public class TedLocalActivity extends _ABaseAct implements Constants {
     		if (code.startsWith("qpy")) {
     			root = Environment.getExternalStorageDirectory().getAbsolutePath().toString()+"/com.hipipal.qpyplus";
     	
+    		} else if (code.startsWith("lua5")) {
+    			root = Environment.getExternalStorageDirectory().getAbsolutePath().toString()+"/com.quseit.lua5";
+
     		} else {
         		root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
 

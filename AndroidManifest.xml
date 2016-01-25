@@ -267,8 +267,8 @@
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:resource="@dimen/app_minimumsize_w" />
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:resource="@dimen/app_minimumsize_h" /-->     
         
-        <meta-data android:name="com.google.android.gms.version" 
-            android:value="@integer/google_play_services_version" />
+        <!--meta-data android:name="com.google.android.gms.version" 
+            android:value="@integer/google_play_services_version" /-->
             	
     	<activity android:name="com.google.android.gms.ads.AdActivity"
               android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
